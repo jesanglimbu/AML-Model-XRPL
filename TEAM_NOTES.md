@@ -61,7 +61,16 @@ The starter notebook (`starter_notebook.ipynb` in the training download) runs in
 - Reproduce with `python xrpl-detector/train_model.py` then `python xrpl-detector/run_pipeline.py`, and upload `outputs/submission.csv`.
 - Of our ~400 highest scores, about 375 are really suspicious. That's the top 1% almost entirely correct, and it covers about 30% of all suspicious payments.
 - Next gains: the relay families (aggregate_relay, distributed_relay) are still about 0% recall in cross-validation. They're 200 of the ~1,250 suspicious payments.
-- Team 2's target is to beat it. Ideas from the README: longer time windows, `HistGradientBoostingClassifier` instead of logistic regression, money that returns to where it started.
+- Team 2's target is to beat it. The README's ideas (longer time windows, `HistGradientBoostingClassifier`, money that returns to where it started) are now in the `alert-ranker` branch below.
+
+## In progress: `alert-ranker` branch (Team 2)
+
+Replaces the pipeline's scoring model with a two-stage ranker in `xrpl-detector/aml_ranker/`. Nothing downstream changes: `predict.py` still writes the same `predictions.csv` columns, so trails, alert ranking, graphs and case summaries work as before.
+
+- **Same cross-validation for both** (5 folds, grouped by scenario and by relay cohort): current pipeline model **AP 49.1**, new ranker **AP 55.4**. That's the site metric, so expect a better leaderboard run than 59.2, though the test data has batch variations that aren't in training.
+- Per difficulty (new ranker): easy 68.8, medium 7.5, hard 1.5. Top 1%: precision 76%, recall 24%. Relay recall is still about 0% (aggregate_relay 4%, distributed_relay 0%).
+- Not uploaded yet. To reproduce: `python xrpl-detector/train_model.py` (about 15-20 min, prints the CV) then `python xrpl-detector/run_pipeline.py`, and upload `outputs/submission.csv`.
+- What we learned: the easy cases are fast bursts (about 5 min per scenario vs about 60 min for the legitimate look-alikes), and suspicious payments almost always use a sender→receiver pair that hasn't paid before. The medium cases are slow and look like the legitimate decoys. Each relay cohort hides 1 planted scenario among 99 matching legitimate ones, and nothing tried so far separates them (including linking accounts to other suspicious activity), so hard recall is still near 0.
 
 ## What's in this repo
 
@@ -69,9 +78,13 @@ The starter notebook (`starter_notebook.ipynb` in the training download) runs in
 |---|---|
 | `payments.py` | The organisers' loader: one row per payment, valued in USD. **Not written by us.** |
 | `case_summary.py` | Case summary writer: turns flagged payments into readable reports |
+| `xrpl-detector/` | The pipeline: scoring (`aml_ranker/`), trails, alert ranking, graphs, case reports. See its README |
+| `LICENSE`, `THIRD_PARTY.md` | MIT licence and the list of what we didn't write (for the ZIP) |
 | `.gitignore` | Keeps data, `dnd-env/` and `.env` (API keys) out of git |
 
 Never commit the data files or API keys. The rules forbid them in the ZIP, and the parquet files are too big for GitHub.
+
+**Heads-up:** the `decode-and-detect-*` data folders are currently tracked in git (they were added before the `.gitignore`). Leave them out of the ZIP, and agree as a team before removing them from the repo.
 
 ## Using `case_summary.py`
 
@@ -101,10 +114,10 @@ The team agreed to use only the `xrpl-detector/` pipeline for alerts: `trail_tra
 The code ZIP must include:
 
 - [ ] All source code
-- [ ] README with the **exact command** that produces `predictions.csv`, plus language version and run time
-- [ ] Dependency list (`requirements.txt`)
-- [ ] `LICENSE` (MIT)
-- [ ] List of what we didn't write: `payments.py`, the starter notebook if used, libraries, and AI assistance (Claude)
+- [x] README with the **exact command** that produces `predictions.csv`, plus language version and run time (top-level `README.md`)
+- [x] Dependency list (`xrpl-detector/requirements.txt`)
+- [x] `LICENSE` (MIT)
+- [x] List of what we didn't write: `THIRD_PARTY.md` (`payments.py`, the starter notebook, libraries, and AI assistance)
 - [ ] **No** data files, `dnd-env/`, or API keys
 
 Limits: 8 MiB compressed, 2,000 files. The organisers may re-run our code, so check the command works from a fresh folder.
