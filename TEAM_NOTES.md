@@ -54,6 +54,13 @@ The starter notebook (`starter_notebook.ipynb` in the training download) runs in
 - Starter notebook, unchanged: **24.6** on held-back training data.
 - **Uploaded to the site: score 33.5, precision 62%, recall 20%** (precision and recall are for the top 1% of scores, about 400 transactions).
 - So of our ~400 highest scores, about 250 are really suspicious, which is about 20% of the ~1,250 suspicious payments. The other 80% are ranked lower down.
+
+## Best run so far
+
+- **`xrpl-detector` pipeline (commit `4a66fec`): score 59.2, precision 94%, recall 30%.**
+- Reproduce with `python xrpl-detector/train_model.py` then `python xrpl-detector/run_pipeline.py`, and upload `outputs/submission.csv`.
+- Of our ~400 highest scores, about 375 are really suspicious. That's the top 1% almost entirely correct, and it covers about 30% of all suspicious payments.
+- Next gains: the relay families (aggregate_relay, distributed_relay) are still about 0% recall in cross-validation. They're 200 of the ~1,250 suspicious payments.
 - Team 2's target is to beat it. Ideas from the README: longer time windows, `HistGradientBoostingClassifier` instead of logistic regression, money that returns to where it started.
 
 ## What's in this repo
