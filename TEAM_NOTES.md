@@ -60,8 +60,8 @@ The starter notebook (`starter_notebook.ipynb` in the training download) runs in
 | Run | Score | Top-1% precision | Top-1% recall |
 |---|---|---|---|
 | Starter notebook (baseline) | 33.5 | 62% | 20% |
-| `xrpl-detector`, single model (commit `4a66fec`) | 59.2 | 94% | 30% |
-| `xrpl-detector`, two-stage ranker `aml_ranker/` (commit `b176cf4`) | 65.4 | 91% | 29% |
+| `xrpl-detector`, single model (commit `6c7bbea`) | 59.2 | 94% | 30% |
+| `xrpl-detector`, two-stage ranker `aml_ranker/` (commit `d7e5083`) | 65.4 | 91% | 29% |
 | `xrpl-detector`, stage-1 model alone (`submission_stage1.csv`) | 65.6 | 92% | not recorded |
 | `xrpl-detector`, blend of stage 1 and stage 2 (`submission_blend.csv`) | 65.9 | 91% | not recorded |
 | `xrpl-detector`, blend + 5% medium specialist (`submission_specialist.csv`) | 65.9 | not recorded | not recorded |
@@ -112,7 +112,7 @@ Replaces the pipeline's scoring model. Nothing downstream changes: `predict.py` 
 
 Never commit the data files or API keys. The rules forbid them in the ZIP, and the parquet files are too big for GitHub.
 
-**Heads-up:** the `decode-and-detect-*` data folders are currently tracked in git (they were added before the `.gitignore`). Leave them out of the ZIP, and agree as a team before removing them from the repo.
+**Repository migrated (24 Oct, evening):** the organisers' dataset was removed from the whole git history so the repo could be made public (event terms 4.3 and 5.3). The old repo, dataset and PRs #1-#10 included, is kept privately as `jesanglimbu/AML-Model-XRPL-archive`. Every commit ID changed in the rewrite; the IDs in these notes and in `REPORT.md` are the new ones. **Re-clone the repo**: old clones still contain the dataset and have incompatible history.
 
 **Repo plan (agreed):** keep working in this repo for now. At **15:00** we copy the code into a **new repo without the data folders or old history**, and that new repo is the public one we submit. Before switching, copy your local `decode-and-detect-*` folders somewhere safe, because they won't be in the new repo.
 
@@ -129,7 +129,7 @@ The top of the file has a "a flag is not proof" note and a glossary. Open `outpu
 
 ## Alerts: one system
 
-The team agreed to use only the `xrpl-detector/` pipeline for alerts: `trail_tracker.py` groups flagged payments, `alert_ranker.py` ranks them, `case_writer.py` explains them. The separate `alert_tracker.py` was removed (it is still in the git history, commit `b96cf6d`, if we need anything from it).
+The team agreed to use only the `xrpl-detector/` pipeline for alerts: `trail_tracker.py` groups flagged payments, `alert_ranker.py` ranks them, `case_writer.py` explains them. The separate `alert_tracker.py` was removed (it is still in the git history, commit `c047703`, if we need anything from it).
 
 ## Final submission checklist
 
