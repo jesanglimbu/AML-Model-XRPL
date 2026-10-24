@@ -62,6 +62,7 @@ The starter notebook (`starter_notebook.ipynb` in the training download) runs in
 |---|---|
 | `payments.py` | The organisers' loader: one row per payment, valued in USD. **Not written by us.** |
 | `case_summary.py` | Case summary writer: turns flagged payments into readable reports |
+| `alert_tracker.py` | Alert tracker: the analyst's review queue, with decisions logged |
 | `.gitignore` | Keeps data, `dnd-env/` and `.env` (API keys) out of git |
 
 Never commit the data files or API keys. The rules forbid them in the ZIP, and the parquet files are too big for GitHub.
@@ -84,6 +85,24 @@ For each case it lists red flags (relay, pass-on, fan-out, fan-in, cycle, pass-t
 - **Team 2:** the case summary picks its cases from your `predictions.csv`. Share each new version so the reports use your latest scores.
 
 Note: with only 700 accounts making 40,000 payments, almost every account is busy, so the red flags fire often. They explain a case; the score from team 2 decides what's suspicious.
+
+## Using `alert_tracker.py`
+
+A review queue for analysts. It groups the top 1% of scores into alerts (flagged payments that share an account within 6 hours), ranks them, says why each is there, and records decisions.
+
+```sh
+python alert_tracker.py refresh --data decode-and-detect-test-data --predictions predictions.csv
+python alert_tracker.py queue                    # what to look at next
+python alert_tracker.py show AL-1a2b3c4d         # payments, reasons, hashes, last decision
+python alert_tracker.py escalate AL-1a2b3c4d --by Owen --note "relay, 4 hops in 9 min"
+python alert_tracker.py close AL-1a2b3c4d --by Owen --note "payroll look-alike"
+python alert_tracker.py handover --out handover.md
+```
+
+- Only `refresh` reads the data. Everything else is instant and works offline.
+- Decisions are appended to `alert_tracker_data/decisions.csv` and never rewritten. Closing or escalating needs a `--note`.
+- Re-running `refresh` with new scores keeps every decision. Alerts are matched by their payments, so an alert that gets regrouped keeps its status, and a closed or escalated alert that gains new flagged payments comes back as **reopened**.
+- Checked on the training labels with the default 6-hour window: 97% of the payments in an alert belong to the same laundering scenario. A 24-hour window drops this to 86%.
 
 ## Final submission checklist
 
