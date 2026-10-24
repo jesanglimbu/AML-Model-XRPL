@@ -45,7 +45,7 @@ market_rates.csv, labels.csv) and `data/test/` (same files, no labels).
 
 ## Run
 ```
-python train_model.py              # cross-validated scores + saves the model (~15-20 min)
+python train_model.py              # cross-validated scores + saves the model (~20 min)
 python run_pipeline.py             # everything on data/test (+ submission_stage1/stage2/blend.csv)
 python run_pipeline.py data/train  # everything on training data (demo/debug)
 ```
@@ -63,6 +63,9 @@ python run_pipeline.py data/train  # everything on training data (demo/debug)
   pattern lifts all of its payments together.
   The uploaded score is the **blend**: the average rank of stage 1 and stage 2 (65.9 on
   the leaderboard, vs 65.6 for stage 1 and 65.4 for stage 2 alone).
+  A small **medium specialist** (medium positives vs all negatives) can be mixed in at 5%:
+  CV AP 57.4 vs 55.7 for the blend. It's written as `submission_specialist.csv`; switch
+  the default with `DEFAULT_SCORE` in `config.py`.
 
 The top-level `features.py` is still used by `predict.py` for the contract columns in
 `predictions.csv` and for the alert reasons.

@@ -20,8 +20,10 @@ SUBMISSION_CSV = f"{OUT_DIR}/submission.csv"     # UPLOAD THIS: TRANSACTION_HASH
 SUBMISSION_VARIANTS = {                           # same format, one per scoring variant (test data only)
     "stage1": f"{OUT_DIR}/submission_stage1.csv",   # stage-1 model alone
     "stage2": f"{OUT_DIR}/submission_stage2.csv",   # two-stage ranker alone
-    "blend": f"{OUT_DIR}/submission_blend.csv",     # average rank of the two (= submission.csv, the default)
+    "blend": f"{OUT_DIR}/submission_blend.csv",     # average rank of the two
+    "specialist": f"{OUT_DIR}/submission_specialist.csv",  # blend + 5% medium specialist
 }
+DEFAULT_SCORE = "blend"      # which variant becomes `probability` and submission.csv
 ALERTS_JSON = f"{OUT_DIR}/alerts.json"           # trail_tracker.py -> alert_ranker.py
 RANKED_JSON = f"{OUT_DIR}/ranked_alerts.json"    # alert_ranker.py  -> case_writer.py
 SUMMARIES_JSON = f"{OUT_DIR}/summaries.json"
