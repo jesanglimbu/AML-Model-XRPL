@@ -1,0 +1,8 @@
+xrpl-py==5.2.0
+pandas
+numpy
+scikit-learn
+networkx
+matplotlib
+pyarrow
+joblib
