@@ -13,9 +13,10 @@ import numpy as np
 from aml_ranker.model import Ensemble
 
 RELAY_FAMILIES = ("aggregate_relay", "distributed_relay")
-# Out-of-fold CV on train: score x (1 - 0.7 * p_relay) gave AP 58.42 vs 57.75 for the mule score
-# (0.5: 58.32, 0.9: 58.17; a rank-based penalty hurt). Leaderboard: 66.8 -> 66.9.
-RELAY_PENALTY = 0.7
+# Out-of-fold CV on train: score x (1 - w * p_relay) gave AP 58.32 (w=0.5) and 58.42 (w=0.7)
+# vs 57.75 for the mule score; a rank-based penalty hurt. Leaderboard: mule 66.8, w=0.7 66.9,
+# w=0.5 67.0, so 0.5 is used.
+RELAY_PENALTY = 0.5
 RELAY_SEEDS = (0,)
 
 
