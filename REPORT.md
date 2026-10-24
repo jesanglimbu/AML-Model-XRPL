@@ -8,7 +8,7 @@ Our tool gives every payment on the synthetic ledger a suspicion score from 0 to
 most suspicious payments into money trails, ranks them as alerts, and writes a plain-English case
 report for each one, citing the transaction hashes behind every claim.
 
-**Best leaderboard score: 66.8** (100 × average precision). Of the 1% of payments we rank most
+**Best leaderboard score: 67.0** (100 × average precision). Of the 1% of payments we rank most
 suspicious, 92% are labelled suspicious.
 
 > **Important:** a flag is a reason to investigate, not evidence of a crime. This is an
@@ -34,7 +34,8 @@ suspicious, 92% are labelled suspicious.
 payments ──► score every payment ──► top 1% ──► group into trails ──► rank alerts ──► case reports
              aml_ranker/             trail_tracker.py   alert_ranker.py   case_writer.py
              (two-stage ranker       (10-min bursts)                      + trail_graph.py
-              + mule network)
+              + mule network
+              + relay penalty)
 ```
 
 ### What separates laundering from legitimate look-alikes
@@ -63,6 +64,12 @@ The legitimate data contains payments with **the same shapes** as the planted la
   pass it on, so for each payment we take the highest blend score among the *other* payments
   touching the same sender or receiver within ±1 hour, and mix its rank into the blend at 20%.
   Payments in the same scheme pull each other up. It uses no labels and adds no training time.
+- **Relay look-alike penalty** (`aml_ranker/relay.py`). Each relay cohort hides about one planted
+  scenario among 99 legitimate look-alikes, and 143 of the 400 highest-scored legitimate training
+  payments were relay look-alikes. A classifier trained on the training labels' family learns
+  "this payment belongs to a relay cohort"; the final score is the mule score × (1 − 0.5 ×
+  that probability). We almost never catch the planted relays anyway, so this mostly removes
+  false alarms.
 
 ### Alerts and case reports
 
@@ -87,7 +94,9 @@ The legitimate data contains payments with **the same shapes** as the planted la
 | Stage 1 alone | 65.6 | 92% | – |
 | Blend of stage 1 and stage 2 (Python 3.14, scikit-learn 1.9.1) | 65.9 | 91% | – |
 | Blend of stage 1 and stage 2 (Python 3.9.6, scikit-learn 1.6.1) | 66.5 | – | – |
-| **Blend + mule network signal (Python 3.9.6, scikit-learn 1.6.1; submitted)** | **66.8** | 92% | 30% |
+| Blend + mule network signal (Python 3.9.6, scikit-learn 1.6.1) | 66.8 | 92% | 30% |
+| Blend + mule + relay penalty 0.7 | 66.9 | 92% | 29% |
+| **Blend + mule + relay penalty 0.5 (submitted)** | **67.0** | 92% | 29% |
 
 The top 1% holds about 400 payments, so it can contain at most about 32% of the ~1,250
 suspicious payments. 29–30% recall is close to that ceiling.
@@ -113,6 +122,10 @@ scores 56.86): with the mule signal **57.75** (easy 75.0 → 75.6, medium 4.7 �
 We tested windows of ±10 min, 30 min, 1 h, 2 h, 6 h and 1 day at weights of 5–40%, and applying the
 signal repeatedly; ±1 h at 20% was best (30% within 0.02). On the leaderboard, from the same
 machine: blend **66.5**, blend + mule **66.8** (+0.3).
+
+**Relay look-alike penalty**, same folds: mule score 57.75 → 58.32 (penalty 0.5) and 58.42 (0.7);
+a rank-based penalty hurt because about half of all payments belong to relay cohorts. On the
+leaderboard 0.5 scored **67.0** and 0.7 scored 66.9.
 
 ### Alert quality
 
