@@ -15,6 +15,34 @@ import re
 import config
 
 
+REPORT_INTRO = """These reports explain why groups of payments were flagged as possible money laundering.
+They are based on a week of **synthetic** payments on a fictional XRPL-style ledger, valued in
+US dollars. Nothing here is a real person, account or allegation.
+
+Each case is one **alert**: a group of linked payments our model flagged together. The **risk score**
+(0 to 1) ranks the alerts, riskiest first. The reasons explain what stands out.
+
+"""
+
+GLOSSARY = """## How to read these reports
+
+| Term | Meaning |
+|---|---|
+| Risk score | How suspicious the whole alert looks, from 0 (normal) to 1 (very suspicious). Used to decide which cases to look at first |
+| Model probability | How suspicious one single payment looks to our model, from 0 to 1 |
+| Linked payments / burst | Payments connected to each other (the same money moving on, splitting or joining) within a few minutes |
+| Passed funds on within N min | The receiver sent money onward almost immediately, the typical sign of a money mule or relay account |
+| Forwarded funds N min after receiving them | The sender was passing on money it had only just been given, rather than spending its own |
+| Forwarded N% of the amount it last received | The account kept almost nothing and passed nearly everything on (a pass-through account) |
+| Sender involved in N other payments within 5 min | Many payments in a very short time, often money being split up (fan-out) or collected (fan-in) |
+| `tx …` | The start of a transaction hash, so every claim can be checked against the data |
+
+**Why speed matters:** legitimate payments can have the same shapes as laundering (chains,
+splits, cycles). What gives laundering away is how **fast** the money moves from account to account.
+
+"""
+
+
 def short(addr):
     return addr[:6] + "…" + addr[-4:]
 
@@ -79,7 +107,8 @@ def write(ranked):
 def save(summaries):
     json.dump(summaries, open(config.SUMMARIES_JSON, "w"), indent=2)
     with open(config.SUMMARIES_MD, "w", encoding="utf-8") as f:
-        f.write("# Case summaries\n\n" + "\n\n---\n\n".join(s["summary"] for s in summaries))
+        f.write("# Case summaries\n\n" + REPORT_INTRO + GLOSSARY + "---\n\n"
+                + "\n\n---\n\n".join(s["summary"] for s in summaries))
 
 
 if __name__ == "__main__":
