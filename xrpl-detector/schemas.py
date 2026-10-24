@@ -33,6 +33,21 @@ RANKED_EXTRA_FIELDS = {"risk_score": (int, float), "reasons": list}
 SUMMARY_FIELDS = {"alert_id": str, "risk_score": (int, float), "summary": str, "cited_hashes": list}
 
 
+# outputs/submission.csv (run_pipeline.py on the test data) -- the file uploaded to the site
+SUBMISSION_COLUMNS = ["TRANSACTION_HASH", "score"]
+
+
+def check_submission(path):
+    df = pd.read_csv(path)
+    if list(df.columns[:2]) != SUBMISSION_COLUMNS:
+        return f"first columns must be {SUBMISSION_COLUMNS}"
+    if df.TRANSACTION_HASH.duplicated().any():
+        return "duplicate TRANSACTION_HASH"
+    if df.score.isna().any() or not df.score.between(0, 1).all():
+        return "every score must be between 0 and 1"
+    return f"ok ({len(df)} rows)"
+
+
 def check_csv(path, columns):
     df = pd.read_csv(path, nrows=5)
     missing = [c for c in columns if c not in df.columns]
@@ -57,6 +72,7 @@ def check_json_list(path, fields):
 def validate_all():
     checks = [
         (config.PREDICTIONS_CSV, lambda p: check_csv(p, PREDICTION_COLUMNS)),
+        (config.SUBMISSION_CSV, check_submission),
         (config.ALERTS_JSON, lambda p: check_json_list(p, ALERT_FIELDS)),
         (config.RANKED_JSON, lambda p: check_json_list(p, {**ALERT_FIELDS, **RANKED_EXTRA_FIELDS})),
         (config.SUMMARIES_JSON, lambda p: check_json_list(p, SUMMARY_FIELDS)),

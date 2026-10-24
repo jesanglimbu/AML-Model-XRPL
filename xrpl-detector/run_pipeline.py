@@ -25,6 +25,10 @@ print(f"1/5 scoring transactions in {folder}...")
 pred = predict.predict(folder)
 pred.drop(columns=["time"]).to_csv(config.PREDICTIONS_CSV, index=False)
 print(f"    {len(pred)} scored, {pred['is_suspicious'].sum()} flagged")
+if folder == config.TEST_DIR:
+    submission = pred[["hash", "probability"]].rename(columns={"hash": "TRANSACTION_HASH", "probability": "score"})
+    submission.to_csv(config.SUBMISSION_CSV, index=False)
+    print(f"    upload file -> {config.SUBMISSION_CSV}")
 
 print("2/5 grouping flagged payments into trails...")
 alerts = trail_tracker.find_trails(pred)
@@ -46,6 +50,8 @@ print("\nTop alerts:")
 for a in ranked[:5]:
     print(f"  {a['alert_id']}  risk {a['risk_score']:.2f}  {len(a['tx_hashes'])} payments  "
           f"{a['minutes_total']} min  -> {a['reasons'][0]}")
-print(f"\nSubmission: {config.PREDICTIONS_CSV}   Report: {config.SUMMARIES_MD}   Pictures: {config.GRAPH_DIR}/")
+if folder == config.TEST_DIR:
+    print(f"\nUpload: {config.SUBMISSION_CSV}")
+print(f"All predictions: {config.PREDICTIONS_CSV}   Report: {config.SUMMARIES_MD}   Pictures: {config.GRAPH_DIR}/")
 print("\nFormat check:")
 schemas.validate_all()

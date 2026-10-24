@@ -15,7 +15,8 @@ TEST_DIR = _first_existing(f"{ROOT}/data/test", f"{ROOT}/decode-and-detect-test-
 OUT_DIR = f"{ROOT}/outputs"
 MODEL_PATH = f"{ROOT}/models/model.joblib"
 
-PREDICTIONS_CSV = f"{OUT_DIR}/predictions.csv"   # SUBMISSION: one row per transaction
+PREDICTIONS_CSV = f"{OUT_DIR}/predictions.csv"   # one row per transaction, with every feature
+SUBMISSION_CSV = f"{OUT_DIR}/submission.csv"     # UPLOAD THIS: TRANSACTION_HASH,score (test data only)
 ALERTS_JSON = f"{OUT_DIR}/alerts.json"           # trail_tracker.py -> alert_ranker.py
 RANKED_JSON = f"{OUT_DIR}/ranked_alerts.json"    # alert_ranker.py  -> case_writer.py
 SUMMARIES_JSON = f"{OUT_DIR}/summaries.json"
