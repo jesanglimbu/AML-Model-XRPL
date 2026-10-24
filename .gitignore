@@ -1,5 +1,23 @@
+# Data (not allowed in the submission ZIP, too big for GitHub)
+*.parquet
+*.csv
+test-data
+
+# Python
+dnd-env/
 .venv/
 __pycache__/
-node_modules/
-.env
+.ipynb_checkpoints/
+
+# Model + generated outputs (everyone regenerates these)
 models/*.joblib
+outputs/
+
+# Node
+node_modules/
+
+# Secrets
+.env
+
+# Mac
+.DS_Store
