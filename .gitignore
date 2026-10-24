@@ -1,0 +1,16 @@
+# Data (not allowed in the submission ZIP, too big for GitHub)
+*.parquet
+*.csv
+test-data
+
+# Python
+dnd-env/
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+
+# Secrets
+.env
+
+# Mac
+.DS_Store
