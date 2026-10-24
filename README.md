@@ -19,8 +19,9 @@ python3 -m venv .venv
 
 The upload file is `outputs/submission.csv` (`TRANSACTION_HASH,score`, one row per test payment).
 The same run also writes the scoring variants we compared on the leaderboard, in the same format:
-`outputs/submission_stage1.csv` (stage-1 model alone), `outputs/submission_stage2.csv` (the two-stage
-ranker, identical to `submission.csv`) and `outputs/submission_blend.csv` (average rank of the two).
+`outputs/submission_stage1.csv` (stage-1 model alone, 65.6), `outputs/submission_stage2.csv` (the
+two-stage ranker alone, 65.4) and `outputs/submission_blend.csv` (average rank of the two, 65.9). The
+blend is the default, so `submission.csv` ranks exactly like `submission_blend.csv`.
 Training takes about 15-20 minutes and the pipeline under a minute on a laptop CPU
 (measured on an Apple M4, 16 GB). Results are deterministic (fixed seeds).
 
