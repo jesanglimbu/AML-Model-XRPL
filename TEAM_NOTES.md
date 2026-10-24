@@ -64,6 +64,7 @@ The starter notebook (`starter_notebook.ipynb` in the training download) runs in
 | `xrpl-detector`, two-stage ranker `aml_ranker/` (commit `b176cf4`) | 65.4 | 91% | 29% |
 | `xrpl-detector`, stage-1 model alone (`submission_stage1.csv`) | 65.6 | 92% | not recorded |
 | **`xrpl-detector`, blend of stage 1 and stage 2 (`submission_blend.csv`, now the default)** | **65.9** | 91% | not recorded |
+| `xrpl-detector`, blend + 5% medium specialist (`submission_specialist.csv`) | 65.9 | not recorded | not recorded |
 
 - What the 65.4 run caught, from the site's breakdown: easy **40%** of 800, medium **10%** of 225, observable hard **0%** of 200, ambiguous **0%** of 25. That adds up to about 342 payments, a little under the ~363 implied by 29% recall, so check which cut-off the breakdown uses before comparing runs on it.
 - **Best run: 65.9** (the blend). Reproduce with `python xrpl-detector/train_model.py` (about 20 min) then `python xrpl-detector/run_pipeline.py`, and upload `outputs/submission.csv`.
@@ -86,7 +87,7 @@ Rule: keep an experiment only if its CV AP beats the current default (the blend)
 - **D, retrained with 3 seeds: CV AP 57.4 vs 55.7 for the blend (+1.7).** Easy 71.1 → 73.7, medium 7.6 → 6.7, hard unchanged.
 - D is a second model trained only on medium positives vs all negatives, mixed in by rank. The mix weight has a flat plateau from 4% to 7.5% (all about 57); 20% and above clearly hurt.
 - Honest caveat: **none of these improved the medium cases.** The specialist ranks medium cases worse than the main model; its gain comes from reordering the easy cases. The medium cases are slow and look like the legitimate decoys, and with only 27 medium scenarios in training no feature or weighting found so far separates them.
-- `run_pipeline.py` writes D as `outputs/submission_specialist.csv`. The default (`submission.csv`, alerts, reports) stays the blend until D scores on the leaderboard; to switch, set `DEFAULT_SCORE = "specialist"` in `xrpl-detector/config.py` and rerun `run_pipeline.py` (no retraining needed).
+- `run_pipeline.py` writes D as `outputs/submission_specialist.csv`. **On the leaderboard it tied the blend at 65.9**, so its CV gain didn't carry over to the test week and **the blend stays the default** (simpler, and what `REPORT.md` describes). To switch anyway, set `DEFAULT_SCORE = "specialist"` in `xrpl-detector/config.py` and rerun `run_pipeline.py` (no retraining needed).
 
 ## The two-stage ranker (`xrpl-detector/aml_ranker/`)
 
