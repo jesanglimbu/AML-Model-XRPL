@@ -1,6 +1,6 @@
-# XRP Ledger alert ranker (fork 2)
+# XRP Ledger alert ranker (fork)
 
-_2026-10-24 10:07 → 2026-10-24 12:45 UTC_
+_Desktop app · 2026-10-24 10:07 → 2026-10-24 12:54 UTC_
 
 
 ## 🧑 User
@@ -420,27 +420,7 @@ Training is still running; I'll be notified when it finishes.
 
 ## 🧑 User
 
-<create-pr-command>
-## Overview
-
-Create a pull request for the changes in this session, ready for review (not a draft).
-
-## Steps
-
-1. Check for uncommitted changes. If any exist, stage and commit them with a message that describes what changed and why.
-2. Push the branch to the remote.
-3. Open the PR with `gh pr create`. Do not pass `--draft`: the user chose “Create PR”, not “Create draft PR”, for this request, and that explicit choice overrides any saved memory, standing instruction, or earlier plan to open it as a draft. When the target below names a base branch and that branch exists on origin (`git ls-remote --heads origin <base>`), pass it with `--base`; otherwise leave `--base` off and let gh infer it. Write a title that summarizes the change and a body that covers what changed, why, and anything a reviewer should know. If the repo has a PR template, follow it.
-4. Report the PR URL when done. Wrap the URL in a `<pr-created>` tag on its own line so the UI can render a live status card, like this: `<pr-created>https://github.com/owner/repo/pull/123</pr-created>`
-
-If a PR already exists for this branch, push any new commits and report the existing URL wrapped in the same `<pr-created>` tag instead of creating a duplicate, and leave that PR's draft or ready state as it is.
-
-## Target
-
-Repository: jesanglimbu/AML-Model-XRPL
-Branch: alert-ranker
-Base branch: main
-Working directory: ~/AML-Model-XRPL
-</create-pr-command>
+_[Clicked the app's **Create PR** button]_
 
 ## 🤖 Claude
 
@@ -495,7 +475,7 @@ I've opened PR #2 to merge the new ranker into `main`. It's ready for review, an
 
 <pr-created>https://github.com/jesanglimbu/AML-Model-XRPL/pull/2</pr-created>
 
-**Getting up to date first:** your local `main` was 4 commits behind. Since this session started, the team had merged your tracker in PR #1, recorded a 59.2 leaderboard run, and then **already removed `alert_tracker.py` from `main`** (Owen's commit `003b4e2`; the team agreed to keep one alert system). The only copies left were a stale untracked `alert_tracker.py` and a `TEAM_NOTES.md` edit in your folder. Both match what's in git history (commit `b96cf6d`), so I deleted them; a backup is in `/private/tmp/claude-501/-Users-jesang-AML-Model-XRPL/e67aff1f-128e-4660-8668-a36212b68395/scratchpad/backup/`. After that `main` updated cleanly and nothing in the repo refers to the tracker.
+**Getting up to date first:** your local `main` was 4 commits behind. Since this session started, the team had merged your tracker in PR #1, recorded a 59.2 leaderboard run, and then **already removed `alert_tracker.py` from `main`** ([teammate]'s commit `003b4e2`; the team agreed to keep one alert system). The only copies left were a stale untracked `alert_tracker.py` and a `TEAM_NOTES.md` edit in your folder. Both match what's in git history (commit `b96cf6d`), so I deleted them; a backup is in `/private/tmp/claude-501/-Users-jesang-AML-Model-XRPL/e67aff1f-128e-4660-8668-a36212b68395/scratchpad/backup/`. After that `main` updated cleanly and nothing in the repo refers to the tracker.
 
 **The ranker, on a new `alert-ranker` branch:**
 - **Where it lives:** my scoring model is now inside the team pipeline at `xrpl-detector/aml_ranker/`, rather than a separate tool.
@@ -559,7 +539,7 @@ Ambiguous: 0% of 25
 
 65.4 is your best run yet: up from 59.2, which in turn beat the 33.5 baseline.
 
-**Already done by the team:** PR #2 has been merged into `main`. Owen recorded the run in `TEAM_NOTES.md` as 65.4, with 91% precision and 29% recall in the top 1%, and added a table of all leaderboard runs.
+**Already done by the team:** PR #2 has been merged into `main`. [teammate] recorded the run in `TEAM_NOTES.md` as 65.4, with 91% precision and 29% recall in the top 1%, and added a table of all leaderboard runs.
 
 **What I added:** your per-difficulty breakdown, as a note under that table. It's committed on a new local branch, `notes-65-4-breakdown`, made from the latest `main`. It's not pushed yet.
 
@@ -732,249 +712,33 @@ The branch `submission-variants` is committed locally and isn't pushed yet; I'll
 
 ## 🧑 User
 
-Both beat our original run, stage 1 got 65.6, blend got 65.9
-Precision was 91% for blend, precision was 92% for stage 1
+I also need the source code in a .zip file
 
 ## 🤖 Claude
 
-The blend is the new best at **65.9** (stage 1 got 65.6, the old run 65.4). As planned, I'll make it the default, record the runs, and push and open a PR.
+I'll build the ZIP from the `submission-variants` branch, since that's the only code that can reproduce all three files you're uploading (stage 2 / 65.4, stage 1 and blend). It will follow the site's rules: source code, README with the exact command, dependencies, licence and credits, and no data, environments, model files or keys. I'll check it actually works from a fresh unzip.
 
-One snag first. The blend is an average rank, so its values aren't probabilities: an ordinary payment scores about 0.5. The alerts and case reports read the same `probability` column, and the `is_suspicious` threshold (0.15) was tuned on stage-2 probabilities. Swapping the blend in as-is would flag most payments and print misleading "model probability" numbers in the reports.
-
-The fix: map the blend onto stage 2's score distribution. That keeps the blend's ordering exactly, so it gets the same 65.9 score, while the values still read like probabilities. I'll check the ordering is unchanged against the file you uploaded.
-
-<details><summary>Tool calls (2)</summary>
+<details><summary>Tool calls (8)</summary>
 
 - `update_plan`
-- `Bash` — Back up uploaded files, check main
+- `Bash` — Check imports, deps, secrets, file list
+- `Bash` — Get tested versions and README section
+- `update_plan`
+- `Edit` — ~/AML-Model-XRPL/README.md
+- `Bash` — Commit README and build code ZIP
+- `update_plan`
+- `Bash` — Rebuild ZIP and test from fresh unzip
 
 </details>
 
 ## 🤖 Claude
 
-`main` hasn't moved, and the three uploaded files are backed up. `is_suspicious` only feeds a printed count and a schema column; alerts flag the top 1% by `probability`. Making the change:
-
-<details><summary>Tool calls (1)</summary>
-
-- `Bash` — Make blend the default probability
-
-</details>
-
-## 🤖 Claude
-
-Now I'll run the test pipeline and check that the new default ranks payments exactly like the uploaded 65.9 file, including ties (the site groups tied scores).
-
-<details><summary>Tool calls (14)</summary>
-
-- `update_plan`
-- `Bash` — Run pipeline and verify blend ordering
-- `Edit` — ~/AML-Model-XRPL/xrpl-detector/aml_ranker/model.py
-- `Bash` — Rerun pipeline and recheck blend ordering
-- `update_plan`
-- `Bash` — Smoke test and view leaderboard section
-- `Bash` — Record runs and blend default in docs
-- `update_plan`
-- `Bash` — Commit, check main, push branch
-- `Bash` — Inspect unexpected branch commits
-- `Bash` — Fix stale README line and push
-- `Bash` — Open PR for blend default
-- `get_status`
-- `wrap_up`
-
-</details>
-
-## 🤖 Claude
-
-The blend is now the default score: `outputs/submission.csv` ranks every payment exactly like the file that scored **65.9**, ties included, so re-uploading it gives 65.9. PR #4 is open for review.
-
-<pr-created>https://github.com/jesanglimbu/AML-Model-XRPL/pull/4</pr-created>
-
-| Upload | Score | Top-1% precision |
-|---|---|---|
-| Stage 2 alone (previous default) | 65.4 | 91% |
-| Stage 1 alone | 65.6 | 92% |
-| **Blend (new default)** | **65.9** | 91% |
-
-**One fix I had to make.** The blend is an average rank, so a typical payment scored about 0.5. That would have broken the alerts' threshold and the "model probability" lines in the case reports, which read the same score column. So the blend's ranking now gets stage 2's probability values, in order.
-- My first attempt at this mapping merged 468 values that were distinct in the uploaded file, which could have shifted the score slightly. I caught that when comparing against the upload.
-- I replaced it with an exact version: the ranking, ties included, is identical to the upload and still reads like a probability.
-
-**Other checks:**
-- The stage-1 and stage-2 files are still byte-identical to the 65.6 and 65.4 uploads.
-- The test pipeline and the `data/train` run both pass every schema check.
-- The alerts now flag 956 payments (vs 955 before).
-
-**Two commits I didn't make.** The branch had two commits under your name from 12:35, probably another session or your own edits: a README note on the variants and library versions, and ignoring `*.zip`. Both are harmless. One README line said stage 2 matched `submission.csv`, which is no longer true, so I updated it.
-
-TEAM_NOTES now has both new runs in the leaderboard table, with 65.9 as the best run. You didn't give recall for these two uploads, so the table says "not recorded" for them.
-
-The gain over 65.4 is real but small (+0.5). The next step in the plan, retraining on our own confident test scores, is aimed at the test week's new batch variations.
-
-## 🧑 User
-
-Owen, one of the team members, told me to run at least 2-3 experiments on medium cases and upload any that beat 65.4 in cross-validation. Hard stop at 14:30, so the final model is retrained and uploaded by 15:00
-
-## 🤖 Claude
-
-Before starting, one problem with the acceptance rule: **"beat 65.4 in cross-validation" compares two different scales.** 65.4 is a leaderboard score, and the same model scores AP 55.4 in our CV; test-week scores run ~10 points higher than CV. Taken literally, no experiment would pass. So I'll treat it as: **keep an experiment only if its CV AP beats the current default model's CV AP under the identical setup.** I'll report medium AP alongside, since that's what the experiments target.
-
-Let me check the time and repo state, then set up a fast experiment loop.
-
-<details><summary>Tool calls (3)</summary>
-
-- `Bash` — Check time, PR #4 and main
-- `update_plan`
-- `Bash` — Branch off main and locate code to change
-
-</details>
-
-## 🤖 Claude
-
-Adding the two options to the code: sample weights in `model.py`, flow episodes in `features.py`. Both default to off until the experiments decide.
+From the fresh unzip, the pipeline reproduces all four submission files byte for byte. Last, the site's ZIP limits:
 
 <details><summary>Tool calls (4)</summary>
 
-- `Bash` — Add sample weights and flow episodes options
-- `Bash` — Run baseline and three medium experiments
-- `Monitor` — medium experiment results and failures
-- `Bash` — Use weights and blend in train_model
-
-</details>
-
-## 🤖 Claude
-
-`train_model.py` now also reports CV on the blend, the score we actually upload. Its threshold is picked on the blend too, consistent with `predict.py`. Waiting for the experiment results.
-
-<details><summary>Tool calls (2)</summary>
-
-- `Bash` — Wait for baseline result
-- `Bash` — Wait for experiments A, B, C
-
-</details>
-
-## 🤖 Claude
-
-A and B **didn't help**: weights 55.3 and flow episodes 55.0, against a baseline of 55.6, with medium AP flat at ~7.5. Waiting on C (both combined).
-
-<details><summary>Tool calls (3)</summary>
-
-- `Bash` — Wait for experiment C
-- `Bash` — Seed-noise check and medium specialist
-- `Monitor` — seed-noise and specialist results
-
-</details>
-
-## 🤖 Claude
-
-Running. Results will arrive as they complete (about 6 minutes total).
-
-<details><summary>Tool calls (5)</summary>
-
-- `Bash` — Wait for seed check and specialist
-- `Bash` — Check specialist weight sensitivity
-- `Bash` — Check lower specialist weights
 - `update_plan`
-- `Bash` — Revert failed experiment code
-
-</details>
-
-## 🤖 Claude
-
-Adding the specialist to `model.py`. I'm factoring the order-preserving mapping out of `blend()` so the specialist mix reuses it.
-
-<details><summary>Tool calls (1)</summary>
-
-- `Bash` — Add medium specialist to model
-
-</details>
-
-## 🤖 Claude
-
-Next, `train_model.py`, to report CV for both the blend and the specialist mix and to save the specialist with the model. I'll also remove the weights wiring, since that experiment failed.
-
-<details><summary>Tool calls (3)</summary>
-
-- `Bash` — Update train_model for specialist
-- `Bash` — Wire specialist into config and predict
-- `Bash` — Tidy predict and back up current model
-
-</details>
-
-## 🤖 Claude
-
-It's 13:17. I've backed up the current 65.9 model, so it can be restored if anything goes wrong. Starting the full 3-seed training (~20–25 min, done by ~13:42):
-
-<details><summary>Tool calls (2)</summary>
-
-- `update_plan`
-- `Bash` — Retrain with specialist, 3 seeds
-
-</details>
-
-## 🤖 Claude
-
-While it trains, I'll draft the TEAM_NOTES section on the experiments (the 3-seed numbers go in once training finishes).
-
-<details><summary>Tool calls (1)</summary>
-
-- `Bash` — Locate doc sections to update
-
-</details>
-
-## 🤖 Claude
-
-I'll wait for training to finish, then fill in the docs with measured numbers rather than estimates.
-
-<details><summary>Tool calls (1)</summary>
-
-- `Bash` — Wait for training to finish
-
-</details>
-
-## 🤖 Claude
-
-Training is still going; I'll be notified when the wait finishes.
-
-<details><summary>Tool calls (4)</summary>
-
-- `Bash` — Keep waiting for training
-- `update_plan`
-- `Bash` — Run pipeline and verify all variant files
-- `Bash` — Verify blend ordering matches the upload
-
-</details>
-
-## 🤖 Claude
-
-The new default ranks exactly like the 65.9 upload. Now the docs (13:37):
-
-<details><summary>Tool calls (1)</summary>
-
-- `Bash` — Document experiments and specialist
-
-</details>
-
-## 🤖 Claude
-
-The docs say the default can be switched with one config line and no retraining, so I'll test that claim directly, along with the team's `data/train` smoke run. Then I'll regenerate the test outputs:
-
-<details><summary>Tool calls (3)</summary>
-
-- `Bash` — Test default switch and smoke runs
-- `update_plan`
-- `Bash` — Commit, check main, push branch
-
-</details>
-
-## 🤖 Claude
-
-`main` has moved again: a new `REPORT.md` and an AI prompt log. It merges cleanly, but the report may describe the model or name the submitted commit, so I'll check it doesn't contradict this branch.
-
-<details><summary>Tool calls (5)</summary>
-
-- `Bash` — Check REPORT.md references
-- `Bash` — Open PR for specialist
-- `get_status`
+- `Bash` — Check ZIP against site limits
 - `SendUserFile`
 - `wrap_up`
 
@@ -982,211 +746,90 @@ The docs say the default can be switched with one config line and no retraining,
 
 ## 🤖 Claude
 
-I ran four medium-case experiments; one passed Owen's bar, and its file (attached above) is ready to upload, at 13:39, ahead of the 14:30 stop. PR #5 is open.
+The code ZIP is attached above and saved as [AML-Model-XRPL-code.zip](AML-Model-XRPL-code.zip) in the repo folder. Upload this same ZIP with whichever submission file you send; it can reproduce all three.
 
-<pr-created>https://github.com/jesanglimbu/AML-Model-XRPL/pull/5</pr-created>
+**What's in it:** 29 files from the `submission-variants` branch:
+- all the source: the `xrpl-detector/` pipeline, the `aml_ranker/` model, `case_summary.py`, and the organisers' `payments.py`
+- the top-level `README.md` with the exact command, the language version and the run time
+- `xrpl-detector/requirements.txt`, `LICENSE` (MIT), and `THIRD_PARTY.md`, which lists what we didn't write, including the AI assistance
+- `TEAM_NOTES.md`
 
-**How I read Owen's rule:** "beats 65.4 in cross-validation" compares two different scales; the 65.4 run scores 55.4 in CV. So the bar was **beating the current blend's CV under the same split**. Two seeds of the baseline differed by only ~0.1, so the gaps below are real, not noise.
+The data folders, the virtual environment, the trained model and the outputs are left out, and there are no API keys or secrets.
 
-| Experiment | CV AP | Medium AP | Result |
-|---|---|---|---|
-| Baseline (the 65.9 blend) | 55.6 | 7.5 | – |
-| A: weight medium positives ×3 and ignore the ambiguous ones | 55.3 | 7.4 | Worse |
-| B: link payments over 30 min–6 h only along money movement between new relationships | 55.0 | 7.5 | Worse |
-| C: A and B together | 55.1 | 7.5 | Worse |
-| **D: a separate medium-only model mixed in at 5%** | **57.1** | 6.6 | **Passes** |
+**Checked against the site's limits:**
 
-**D, retrained with 3 seeds:** CV AP **57.4 vs 55.7** for the blend (+1.7). The result isn't fragile: mix weights from 4% to 7.5% all give about 57.
-
-**This doesn't solve the medium cases.** All four experiments left medium flat or lower, and the gain from D comes from reordering easy cases. Medium cases look like the legitimate decoys, and training has only 27 medium scenarios, so I found no reliable way to tell them apart.
-
-**What changed in the pipeline:**
-- **New file:** `run_pipeline.py` now also writes `outputs/submission_specialist.csv`.
-- **Default unchanged:** `submission.csv`, the alerts and the reports still use the blend until the specialist scores on the leaderboard.
-- **Switching:** set `DEFAULT_SCORE = "specialist"` in `config.py` and rerun `run_pipeline.py` (no retraining). I tested that switch.
-- **Checks:** the retrained model reproduces all three earlier uploads exactly, the specialist file is valid, and both pipeline runs pass every schema check.
-- **Dropped:** I left the failed A–C code out of the PR. They're recorded in a new experiments section in TEAM_NOTES.
-
-**Once you have the score:**
-- **If it beats 65.9:** I'll switch the default and record the run. `REPORT.md`, which a teammate added to `main`, still describes the blend as submitted and needs updating too.
-- **If it doesn't:** the blend stays final. `REPORT.md` is already correct then; only its "Submitted commit" line still needs filling in.
-
-## 🧑 User
-
-I'll upload submission_specialist.csv and tell you the score.
-
-## 🤖 Claude
-
-Sounds good. As before, please send the top-1% precision and recall along with the score.
-
-Once you have them:
-- **If it beats 65.9:** I'll switch `DEFAULT_SCORE` to the specialist, rerun the pipeline so `submission.csv`, the alerts and the reports all use it, record the run in TEAM_NOTES, and push to PR #5. `REPORT.md` describes the blend as submitted, so it'll need updating too. It's a teammate's file, so I'll edit it only if you say so, or leave it for its owner.
-- **If it doesn't:** the blend stays final. I'll record the result in TEAM_NOTES on PR #5. `REPORT.md` is already right in that case, apart from its "Submitted commit" line.
-
-None of this needs retraining, so either path takes a few minutes, well ahead of the 14:30 stop. The 65.9 model is backed up in case anything needs restoring.
-
-## 🧑 User
-
-Could you send the source file (without datasets) and the csv
-
-## 🧑 User
-
-[Request interrupted by user]
-
-## 🧑 User
-
-Send the source code .zip file (without datasets) and the csv
-
-## 🤖 Claude
-
-I'll build the code ZIP from **this branch merged with the latest `main`**, so it includes the specialist code plus your teammates' new `REPORT.md` and AI prompt log. I'll leave out both `decode-and-detect-*` data folders, then check it against the site's limits (8 MiB, 2,000 files, no ZIP64).
-
-<details><summary>Tool calls (2)</summary>
-
-- `update_plan`
-- `Bash` — Archive merged tree without datasets
-
-</details>
-
-## 🤖 Claude
-
-PR #5 has already been merged (`main` is now at `53c2a48`). Let me confirm the ZIP's contents are exactly `main`, and check which score `main` uses as its default, so the CSV I send matches the code.
-
-<details><summary>Tool calls (6)</summary>
-
-- `update_plan`
-- `Bash` — Compare to main and check ZIP integrity
-- `Bash` — Reproduce submission from extracted ZIP
-- `update_plan`
-- `SendUserFile`
-- `wrap_up`
-
-</details>
-
-## 🤖 Claude
-
-Both files are attached above, ready to upload together.
-
-| File | What it is |
+| Limit | Ours |
 |---|---|
-| `AML-Model-XRPL-code.zip` | All source code and docs, exactly `main` at `53c2a48`. 49 KB, 30 files. |
-| `submission.csv` | The blend, which `main` uses by default. It ranks exactly like your 65.9 upload. |
+| 8 MiB compressed | 39 KiB |
+| 64 MiB uncompressed | 82 KiB |
+| 2,000 files | 29 |
+| No encrypted, multi-part or ZIP64 archives | None of those |
 
-**The ZIP leaves out:**
-- both `decode-and-detect-*` data folders
-- the trained model (`models/`) and generated outputs
-- virtual environments
-- secrets (none were found in the repo)
+**Checked that it reproduces:** I unzipped it into an empty folder, added the data and the trained model, and ran `run_pipeline.py`. All four submission files (`submission`, `stage1`, `stage2`, `blend`) came out byte-identical to the ones you have. I didn't re-run the ~17-minute training from the ZIP. Training is the same code that reproduced its results exactly before.
 
-**It includes:** the README with the exact command, the MIT `LICENSE`, `THIRD_PARTY.md`, `requirements.txt`, and your teammates' `REPORT.md` and `OWEN_AI_PROMPTS.md`. It passes the zip integrity test and is well inside the site's limits (8 MiB, 2,000 files).
+**Small changes I made for the ZIP:**
+- **README:** now explains how the stage-1 and blend files are produced, since your best run may end up being one of them, and lists the library versions we tested with.
+- **`.gitignore`:** I added a `*.zip` rule so the ZIP doesn't get committed by accident; the team's version didn't have one.
 
-**Reproducibility check:** I unpacked the ZIP into an empty folder and ran the pipeline from there, adding only the data and the trained model. The `submission.csv` it produced is byte-identical to the one attached. I didn't rerun the 20-minute training as part of this check; earlier runs showed training is deterministic.
+These are the last 2 of 3 commits on the local branch `submission-variants`, which isn't pushed yet. I'll push it when your stage-1 and blend scores come back.
 
-**Two things before you submit:**
-- **`REPORT.md`** still says *"Submitted commit: TODO"*. If this is the final upload, that line should read `53c2a48`. It's a teammate's file, so I haven't edited it; I can if you want.
-- **The specialist file:** I haven't seen its score. If it beat 65.9, this CSV and ZIP aren't your best run. I'd switch the default and send you new ones in a few minutes, with no retraining needed.
+**If one of the variants wins:** I'll make it the default `submission.csv` and rebuild the ZIP so it matches.
 
 ## 🧑 User
 
-It scored the same.
+_[Clicked the app's **Create PR** button]_
 
 ## 🤖 Claude
 
-A tie (65.9 for both) means **the blend stays final**. The specialist's +1.7 in CV didn't carry over to the test week, and the blend is simpler. It's also what the ZIP and CSV I just sent use, and what `REPORT.md` already describes. So nothing you've uploaded needs to change.
-
-I'll record the result in TEAM_NOTES so the team doesn't re-try it. That's a docs-only change on a small branch off the latest `main`, committed locally only.
-
-<details><summary>Tool calls (2)</summary>
-
-- `update_plan`
-- `Bash` — Branch off latest main, locate notes lines
-
-</details>
-
-## 🤖 Claude
-
-`main` has moved again since I built the ZIP: a new commit, `9cff859` ("Case reports: pattern, roles, pass-on speed and trail graph"). Let me check whether it affects the ZIP or CSV I sent.
-
-<details><summary>Tool calls (9)</summary>
-
-- `Bash` — Inspect commits since the ZIP
-- `Bash` — Record specialist tie and commit locally
-- `update_plan`
-- `Bash` — Rebuild code ZIP from branch HEAD
-- `update_plan`
-- `Bash` — Reproduce from rebuilt ZIP in fresh folder
-- `update_plan`
-- `SendUserFile`
-- `wrap_up`
-
-</details>
-
-## 🤖 Claude
-
-The specialist tied the blend at 65.9, so **the blend stays final**. Nothing about your score or the CSV changes.
-
-**Use the new ZIP attached above, not the earlier one.** Owen pushed a commit to `main` at 13:41, after I built the first ZIP. It reworks the case reports (`case_writer.py`), removes `case_summary.py` and the root copy of `payments.py`, and updates the docs. The scoring isn't affected, but the earlier ZIP had the old report code.
-
-| File | What it is |
-|---|---|
-| `AML-Model-XRPL-code.zip` | Latest `main` (`9cff859`) plus my TEAM_NOTES entry; no datasets, model files or secrets. |
-| `submission.csv` | Unchanged: the blend, 65.9. |
-
-I re-checked the new ZIP from an empty folder, adding only the data and the trained model. All schema checks pass, Owen's new case reports and trail graphs generate, and its `submission.csv` is byte-identical to the one attached.
-
-**Recorded in TEAM_NOTES:** the specialist's 65.9 tie, and why the blend stays the default. It's committed on a local branch, `notes-specialist-result`, and not pushed yet. If that commit is merged as it is, `main` will match the ZIP exactly.
-
-**Still to do before the deadline:** `REPORT.md` says *"Submitted commit: TODO"*. It should name the commit that matches the uploaded ZIP: the notes commit's merge if it goes into `main`, or `9cff859` if not. It's Owen's file, so I haven't changed it.
-
-## 🧑 User
-
-<create-pr-command>
-## Overview
-
-Create a pull request for the changes in this session, ready for review (not a draft).
-
-## Steps
-
-1. Check for uncommitted changes. If any exist, stage and commit them with a message that describes what changed and why.
-2. Push the branch to the remote.
-3. Open the PR with `gh pr create`. Do not pass `--draft`: the user chose “Create PR”, not “Create draft PR”, for this request, and that explicit choice overrides any saved memory, standing instruction, or earlier plan to open it as a draft. When the target below names a base branch and that branch exists on origin (`git ls-remote --heads origin <base>`), pass it with `--base`; otherwise leave `--base` off and let gh infer it. Write a title that summarizes the change and a body that covers what changed, why, and anything a reviewer should know. If the repo has a PR template, follow it.
-4. Report the PR URL when done. Wrap the URL in a `<pr-created>` tag on its own line so the UI can render a live status card, like this: `<pr-created>https://github.com/owner/repo/pull/123</pr-created>`
-
-If a PR already exists for this branch, push any new commits and report the existing URL wrapped in the same `<pr-created>` tag instead of creating a duplicate, and leave that PR's draft or ready state as it is.
-
-## Target
-
-Repository: jesanglimbu/AML-Model-XRPL
-Branch: notes-specialist-result
-Base branch: main
-Working directory: ~/AML-Model-XRPL
-</create-pr-command>
+This PR is for a branch I haven't worked on, `notes-specialist-result`, and another linked session (PR #4) has since changed the code: there's now a "medium specialist" and the blend is the default. So I'll check the current state before committing anything.
 
 <details><summary>Tool calls (1)</summary>
 
-- `Bash` — Check state, push notes branch
+- `Bash` — Inspect branch, changes, remote and PRs
 
 </details>
 
 ## 🤖 Claude
 
-No uncommitted changes (`models/` is generated and stays out), and `main` is still at `9cff859`, so the branch merges cleanly. It's pushed, and no PR exists yet. Opening one:
+Nothing needs a new PR. `notes-specialist-result` is identical to its remote copy (`80fa4b9`), the working tree has no changes (only the generated `models/` folder, which isn't committed), and the branch is **already fully merged** into `main` through PR #7. It has no commits that aren't on `main`, so a new PR would be empty, and GitHub refuses those. Here's the existing PR for this branch:
 
-<details><summary>Tool calls (3)</summary>
+<pr-created>https://github.com/jesanglimbu/AML-Model-XRPL/pull/7</pr-created>
 
-- `Bash` — Open PR for notes branch
-- `get_status`
-- `wrap_up`
+**While I was away, the linked session [xrp-ledger-alert-rank-2](#local_4732c7f2-dac6-41fa-85c3-c64992bb530f) merged four PRs into `main`:**
+- **#4:** made the stage-1/stage-2 blend the default score, after it scored **65.9** on the leaderboard (up from 65.4).
+- **#5:** added a medium-case specialist as an upload candidate (CV 57.4 vs 55.7).
+- **#6:** recorded the specialist's leaderboard run, **65.9**, a tie with the blend.
+- **#7:** added a readable chat history from the project's Claude Code sessions.
+
+The new `train_model.py` I was shown is from those merged commits, so nothing on this branch is uncommitted.
+
+**Two things are out of date because of this:**
+- **Your local `main`** is 4 commits behind `origin/main`. Update it before starting new work.
+- **The code ZIP I built** came from `submission-variants` before the blend became the default and before the specialist was added. It doesn't match the current best run (65.9), so rebuild it from the latest `main` before you upload it.
+
+## 🧑 User
+
+_[Clicked the app's **Create PR** button]_
+
+## 🤖 Claude
+
+Again a branch I haven't worked on: `chat-history-structure`. Let me check its state.
+
+<details><summary>Tool calls (1)</summary>
+
+- `Bash` — Inspect chat-history-structure branch
 
 </details>
 
 ## 🤖 Claude
 
-I opened PR #6 into `main`. It's ready for review; the repo has no CI checks.
+No PR is possible for this one yet: `chat-history-structure` has no changes.
 
-<pr-created>https://github.com/jesanglimbu/AML-Model-XRPL/pull/6</pr-created>
+- **No commits:** it's a local branch at the same commit as `main` (`fb2b463`), with nothing that isn't already on `main`.
+- **No uncommitted work:** the working tree is clean apart from the generated `models/` folder.
+- **Not on GitHub:** the branch hasn't been pushed, and no PR exists for it.
 
-The PR only touches `TEAM_NOTES.md`: it adds the specialist upload (65.9) to the leaderboard table, and notes that the tie means the blend stays the default. No code changes, so your submitted CSV is unaffected. The branch merges cleanly with `main`.
+So there's nothing to commit, and GitHub won't open a PR that has no changes. I haven't pushed the empty branch.
 
-If it's merged as it is, `main` will match the code ZIP I sent you exactly. `REPORT.md`'s "Submitted commit" line should then name that merge commit (or `9cff859` if this PR isn't merged). It's Owen's file, so the PR description flags it for him rather than me editing it.
+The name suggests someone created it to restructure the chat history added in PR #7, but nothing has been done on it yet. Once that work is committed here, I can push the branch and open the PR.
 

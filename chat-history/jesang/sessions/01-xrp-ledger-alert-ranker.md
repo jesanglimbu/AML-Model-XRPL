@@ -1,6 +1,6 @@
-# XRP Ledger alert ranker (fork)
+# XRP Ledger alert ranker
 
-_2026-10-24 10:07 → 2026-10-24 11:36 UTC_
+_Desktop app · 2026-10-24 10:07 → 2026-10-24 11:23 UTC_
 
 
 ## 🧑 User
@@ -420,27 +420,7 @@ Training is still running; I'll be notified when it finishes.
 
 ## 🧑 User
 
-<create-pr-command>
-## Overview
-
-Create a pull request for the changes in this session, ready for review (not a draft).
-
-## Steps
-
-1. Check for uncommitted changes. If any exist, stage and commit them with a message that describes what changed and why.
-2. Push the branch to the remote.
-3. Open the PR with `gh pr create`. Do not pass `--draft`: the user chose “Create PR”, not “Create draft PR”, for this request, and that explicit choice overrides any saved memory, standing instruction, or earlier plan to open it as a draft. When the target below names a base branch and that branch exists on origin (`git ls-remote --heads origin <base>`), pass it with `--base`; otherwise leave `--base` off and let gh infer it. Write a title that summarizes the change and a body that covers what changed, why, and anything a reviewer should know. If the repo has a PR template, follow it.
-4. Report the PR URL when done. Wrap the URL in a `<pr-created>` tag on its own line so the UI can render a live status card, like this: `<pr-created>https://github.com/owner/repo/pull/123</pr-created>`
-
-If a PR already exists for this branch, push any new commits and report the existing URL wrapped in the same `<pr-created>` tag instead of creating a duplicate, and leave that PR's draft or ready state as it is.
-
-## Target
-
-Repository: jesanglimbu/AML-Model-XRPL
-Branch: alert-ranker
-Base branch: main
-Working directory: ~/AML-Model-XRPL
-</create-pr-command>
+_[Clicked the app's **Create PR** button]_
 
 ## 🤖 Claude
 
@@ -495,7 +475,7 @@ I've opened PR #2 to merge the new ranker into `main`. It's ready for review, an
 
 <pr-created>https://github.com/jesanglimbu/AML-Model-XRPL/pull/2</pr-created>
 
-**Getting up to date first:** your local `main` was 4 commits behind. Since this session started, the team had merged your tracker in PR #1, recorded a 59.2 leaderboard run, and then **already removed `alert_tracker.py` from `main`** (Owen's commit `003b4e2`; the team agreed to keep one alert system). The only copies left were a stale untracked `alert_tracker.py` and a `TEAM_NOTES.md` edit in your folder. Both match what's in git history (commit `b96cf6d`), so I deleted them; a backup is in `/private/tmp/claude-501/-Users-jesang-AML-Model-XRPL/e67aff1f-128e-4660-8668-a36212b68395/scratchpad/backup/`. After that `main` updated cleanly and nothing in the repo refers to the tracker.
+**Getting up to date first:** your local `main` was 4 commits behind. Since this session started, the team had merged your tracker in PR #1, recorded a 59.2 leaderboard run, and then **already removed `alert_tracker.py` from `main`** ([teammate]'s commit `003b4e2`; the team agreed to keep one alert system). The only copies left were a stale untracked `alert_tracker.py` and a `TEAM_NOTES.md` edit in your folder. Both match what's in git history (commit `b96cf6d`), so I deleted them; a backup is in `/private/tmp/claude-501/-Users-jesang-AML-Model-XRPL/e67aff1f-128e-4660-8668-a36212b68395/scratchpad/backup/`. After that `main` updated cleanly and nothing in the repo refers to the tracker.
 
 **The ranker, on a new `alert-ranker` branch:**
 - **Where it lives:** my scoring model is now inside the team pipeline at `xrpl-detector/aml_ranker/`, rather than a separate tool.
@@ -531,234 +511,28 @@ Once you have it, I'll:
 
 ## 🧑 User
 
-We got 65.4. Here's some stats:
-
-What the best run caught: 65.4
-Easy: 40% of 800
-Medium: 10% of 225
-Observable hard: 0% of 200
-Ambiguous: 0% of 25
+I need to submit a .zip file with the source code and the predictions CSV.
+Please provide me with these
 
 ## 🤖 Claude
 
-65.4 beats the previous best of 59.2. I'll record it in TEAM_NOTES and push to the PR. First I'll check the branch is still current.
-
-<details><summary>Tool calls (7)</summary>
-
-- `update_plan`
-- `Bash` — Check branch and remote state
-- `Bash` — Inspect the new main commits
-- `update_plan`
-- `Bash` — Branch off latest main and add breakdown
-- `Bash` — Commit breakdown note locally
-- `wrap_up`
-
-</details>
-
-## 🤖 Claude
-
-65.4 is your best run yet: up from 59.2, which in turn beat the 33.5 baseline.
-
-**Already done by the team:** PR #2 has been merged into `main`. Owen recorded the run in `TEAM_NOTES.md` as 65.4, with 91% precision and 29% recall in the top 1%, and added a table of all leaderboard runs.
-
-**What I added:** your per-difficulty breakdown, as a note under that table. It's committed on a new local branch, `notes-65-4-breakdown`, made from the latest `main`. It's not pushed yet.
-
-**Something to check:** the breakdown doesn't quite match the 29% recall.
-- 40% of 800 easy plus 10% of 225 medium is about 342 payments.
-- 29% recall in the top 1% means about 363 payments.
-
-The gap of about 20 is too big to be rounding, so the breakdown may use a different cut-off than the top 1%. The note says so, so nobody compares future runs on it without knowing.
-
-**What the breakdown shows:** almost all the gain is from easy cases, and the top 1% (about 400 payments) has room for at most half of the 800 easy ones. For the remaining points:
-- **Medium cases (10% caught):** these are the most realistic gain. They're slow, legitimate-looking variants of the easy patterns.
-- **Hard relay cases (0% caught):** these are still open. Nothing I tried separates the planted scenario from its 99 legitimate look-alikes.
-- **Ambiguous cases (0% caught):** the README says their labels don't depend on anything in the data, so there's nothing to gain there.
-
-## 🧑 User
-
-Push notes-65-4-breakdown and open a PR into main.
-
-<details><summary>Tool calls (1)</summary>
-
-- `Bash` — Check main, push branch, check for existing PR
-
-</details>
-
-## 🤖 Claude
-
-`main` hasn't moved, so the branch is current. It's pushed, and no PR exists for it yet. Opening one:
-
-<details><summary>Tool calls (3)</summary>
-
-- `Bash` — Open PR for breakdown note
-- `get_status`
-- `wrap_up`
-
-</details>
-
-## 🤖 Claude
-
-I pushed `notes-65-4-breakdown` and opened PR #3 into `main`. It's ready for review.
-
-<pr-created>https://github.com/jesanglimbu/AML-Model-XRPL/pull/3</pr-created>
-
-The PR is the one-line breakdown note in `TEAM_NOTES.md`. `main` hadn't changed since I made the branch, so it merges cleanly, and the repo has no CI checks.
-
-The PR description asks reviewers about the mismatch: your breakdown adds up to about 342 payments, but 29% recall in the top 1% implies about 363. If someone knows which cut-off the site's breakdown uses, they can fix the note before merging.
-
-## 🧑 User
-
-How do we beat our score now?
-
-## 🤖 Claude
-
-You have until 15:00 to add features. Here's where I'd spend that time, based on what we measured.
-
-**Where the points are.** Easy cases are 64% of the suspicious payments. They're also where the site says we're already catching 40%, so better ranking of the remaining easy ones is the biggest lever. Medium (18%) is a realistic second target. The hard relay cases (16%) barely move the score even with a good idea, and the ambiguous ones (2%) can't be predicted by design.
-
-**What I'd do, in order:**
-
-1. **Upload variants of the model we already have.** This is the cheapest option and needs no new features. The test week scores much higher than our CV (65.4 vs 55.4) and has batch variations that aren't in training, so CV is a poor guide for small choices; with 50 uploads a day, let the site decide.
-   - Stage 2 helped medium and hard in CV but hurt easy (easy AP 72.3 → 68.8), and easy is most of the points.
-   - So upload three versions: stage 1 only, stage 2 only (the current upload), and the average of the two.
-   - This needs a small change so `predict.py` writes all three files, plus 2 uploads. About 30 minutes, including retraining once.
-
-2. **Adapt to the test week by training on our own confident test scores.** Retrain with the test week's most and least suspicious payments added as labelled examples. This is aimed at the new batch variations, and it uses only our own scores, not test answers. It's one run of about 20 minutes and one upload.
-
-3. **Score whole episodes, not single payments.** Aggregated per scenario, the easy cases separate from the legitimate look-alikes much better (AUC 0.93) than individual payments do. Stage 2 only approximates this by averaging over neighbours. A model that scores each group of linked payments as a unit, then gives that score to its payments, could beat it. This is about an hour of work.
-
-4. **Hard relays: there's one real lead, but it's weak.** In all 12 training cohorts, the planted hub passes money on sooner than most of its 99 look-alikes do (median about 2–4 hours vs about 1.4 days). That's consistent, but the planted scenario still only ranks about 24th of 100 within its cohort on average, so it would add very little to the score. I'd try it only after 1–3.
-
-**What's not worth the time:** more hyperparameter tuning (four configs moved AP by about ±1), the ambiguous cases, and linking accounts to other suspicious activity (already tested, no signal).
-
-To make each try faster, run experiments with one seed and cached features. That cuts a CV run from about 17 minutes to about 5, and you keep three seeds for the final upload.
-
-I'd start with step 1 now: it's quick and gives you three uploads to compare by about 13:15.
-
-<details><summary>Tool calls (1)</summary>
-
-- `wrap_up`
-
-</details>
-
-## 🤖 Claude
-
-The plan is above, and step 1 is the place to start: three submission files from the current model (stage 1 only, stage 2 only, and their average) that you can compare on the leaderboard. It takes about 30 minutes, mostly one retraining run, and it changes no features, so the main version of the code stays as it is.
-
-## 🧑 User
-
-Make predict write stage-1, stage-2 and blended submissions, retrain, and give me the three files to upload.
-
-## 🤖 Claude
-
-I'll build this on a new branch off the latest `main`.
-
-The saved model already contains both stages, so the variants only need a change to `predict.py`. A retrain should reproduce the same model exactly; I verified that last time. So I'll first check the saved model still matches the merged code, and only retrain if it doesn't (that saves ~17 minutes before the deadline).
-
-<details><summary>Tool calls (5)</summary>
-
-- `update_plan`
-- `Bash` — Branch off main and check model inputs
-- `Edit` — ~/AML-Model-XRPL/xrpl-detector/aml_ranker/model.py
-- `Read` — ~/AML-Model-XRPL/xrpl-detector/predict.py
-- `Bash` — Add variant scores and submission files
-
-</details>
-
-## 🤖 Claude
-
-Downstream still reads only `probability` (unchanged, stage 2), so alerts and reports aren't affected. Running the full test pipeline:
-
-<details><summary>Tool calls (5)</summary>
-
-- `update_plan`
-- `Bash` — Run test pipeline writing all variants
-- `update_plan`
-- `Bash` — Validate variants and compare rankings
-- `Bash` — Train smoke test, then regenerate test outputs
-
-</details>
-
-## 🤖 Claude
-
-Both runs pass, and after regenerating, the test outputs still match the 65.4 file byte for byte. Last, a short doc update so the team knows about the variant files:
-
-<details><summary>Tool calls (3)</summary>
-
-- `Bash` — Update docs and commit on branch
-- `SendUserFile`
-- `wrap_up`
-
-</details>
-
-## 🤖 Claude
-
-The three files are attached above and in `outputs/`. You only need to upload two of them: stage 2 is byte-identical to your 65.4 run, so uploading it again would just give 65.4.
-
-| File | What it is | Upload? |
-|---|---|---|
-| `submission_stage1.csv` | Stage-1 model alone | **Yes** |
-| `submission_blend.csv` | Average rank of stage 1 and stage 2 | **Yes** |
-| `submission_stage2.csv` | Current two-stage ranker (= the 65.4 run) | No |
-
-**Why these two:** in cross-validation, stage 2 hurt the easy cases (easy AP 72.3 → 68.8), and easy cases are most of the score. The rankings really do differ: stage 1 and stage 2 share only 340 of their top 401 payments. The blend sits in between, sharing 372 with stage 2 and 369 with stage 1.
-
-**I didn't retrain.** Nothing in the scoring code has changed since the saved model was trained at 12:13, and training reproduces the same model exactly. Retraining would have taken ~17 minutes to rebuild a byte-identical model; the stage-2 file matching the 65.4 upload exactly confirms it's that model.
-
-**What changed in the code:**
-- **`predict.py`** now keeps both stages' scores and, on the test data, writes the three variant files. `config.py` gives their paths.
-- **Unchanged:** `probability`, `submission.csv`, the alerts and the reports all still use stage 2.
-- **Checks:** all schema checks pass, and both the test run and the `data/train` smoke run complete.
-
-The change is committed on a local branch, `submission-variants`. It isn't pushed yet.
-
-**Once you have the two scores:**
-- **If either beats 65.4:** I'll make it the default `submission.csv`.
-- **If neither does:** stage 2 stays, and I'll move on to retraining on our own confident test scores (step 2 of the plan).
-
-## 🧑 User
-
-I'll upload submission_stage1.csv and submission_blend.csv and tell you both scores.
-
-## 🤖 Claude
-
-Sounds good. Please send the top-1% precision and recall the site shows for each file along with its score. If the scores are close, those two numbers will show whether the difference comes from the top of the list or further down.
-
-Once you have them:
-- **If stage 1 or the blend beats 65.4:** I'll make the winner the default `submission.csv` (and the `probability` the alerts use), update TEAM_NOTES, then push the branch and open a PR.
-- **If neither does:** stage 2 stays the default. I'll still push the variants branch so the team can reuse the files, then start on retraining with our own confident test scores.
-
-The branch `submission-variants` is committed locally and isn't pushed yet; I'll push it once we know which default to set.
-
-## 🧑 User
-
-I also need the source code in a .zip file
-
-## 🤖 Claude
-
-I'll build the ZIP from the `submission-variants` branch, since that's the only code that can reproduce all three files you're uploading (stage 2 / 65.4, stage 1 and blend). It will follow the site's rules: source code, README with the exact command, dependencies, licence and credits, and no data, environments, model files or keys. I'll check it actually works from a fresh unzip.
-
-<details><summary>Tool calls (8)</summary>
-
-- `update_plan`
-- `Bash` — Check imports, deps, secrets, file list
-- `Bash` — Get tested versions and README section
-- `update_plan`
-- `Edit` — ~/AML-Model-XRPL/README.md
-- `Bash` — Commit README and build code ZIP
-- `update_plan`
-- `Bash` — Rebuild ZIP and test from fresh unzip
-
-</details>
-
-## 🤖 Claude
-
-From the fresh unzip, the pipeline reproduces all four submission files byte for byte. Last, the site's ZIP limits:
+I'll build the code ZIP from the committed `alert-ranker` branch, since that's the code that produced the scores, and leave out the data folders. Then I'll test the ZIP from a clean folder before handing it over.
 
 <details><summary>Tool calls (4)</summary>
 
 - `update_plan`
-- `Bash` — Check ZIP against site limits
+- `Bash` — Build code ZIP excluding data folders
+- `update_plan`
+- `Bash` — Run pipeline from unpacked ZIP and compare
+
+</details>
+
+## 🤖 Claude
+
+The unpacked ZIP produces a byte-identical `submission.csv`, and every format check passes. Here are both files:
+
+<details><summary>Tool calls (2)</summary>
+
 - `SendUserFile`
 - `wrap_up`
 
@@ -766,32 +540,17 @@ From the fresh unzip, the pipeline reproduces all four submission files byte for
 
 ## 🤖 Claude
 
-The code ZIP is attached above and saved as [AML-Model-XRPL-code.zip](AML-Model-XRPL-code.zip) in the repo folder. Upload this same ZIP with whichever submission file you send; it can reproduce all three.
+Both files are ready to upload together; they're attached above and saved in `outputs/`:
 
-**What's in it:** 29 files from the `submission-variants` branch:
-- all the source: the `xrpl-detector/` pipeline, the `aml_ranker/` model, `case_summary.py`, and the organisers' `payments.py`
-- the top-level `README.md` with the exact command, the language version and the run time
-- `xrpl-detector/requirements.txt`, `LICENSE` (MIT), and `THIRD_PARTY.md`, which lists what we didn't write, including the AI assistance
-- `TEAM_NOTES.md`
+- **Code ZIP:** [outputs/AML-Model-XRPL-code.zip](outputs/AML-Model-XRPL-code.zip). It's 38 KB with 29 files, far inside the 8 MiB / 2,000-file limits. It contains the source code, `README.md` with the exact command, `xrpl-detector/requirements.txt`, the MIT `LICENSE` and `THIRD_PARTY.md`, and no data files.
+- **Predictions CSV:** [outputs/submission.csv](outputs/submission.csv). It has one score for each of the 40,101 test payments, between 0 and 1.
 
-The data folders, the virtual environment, the trained model and the outputs are left out, and there are no API keys or secrets.
+**How I checked them:** I unpacked the ZIP into an empty folder and pointed it at the data. Running `run_pipeline.py` from there reproduced `submission.csv` byte for byte, and every format check passed. For that test I reused the already-trained model, so I didn't re-run the 17-minute training step from the ZIP. That same training code did give identical CV results on two separate runs.
 
-**Checked against the site's limits:**
+**Things to know:**
+- **The ZIP comes from the `alert-ranker` branch,** which isn't merged into `main` yet (PR #2). That's correct, because that branch's code produced these scores.
+- **Library versions aren't pinned** in `requirements.txt`. If the organisers re-run it later with newer libraries, the scores could differ slightly. These ran on Python 3.14.8, NumPy 2.5.4, pandas 3.1.0, scikit-learn 1.9.1 and SciPy 1.18.1, and I can pin those if you want.
+- **Rebuilding the ZIP:** the `outputs/` folder is ignored by git. If the code changes, ask me to rebuild the ZIP so it matches the new CSV.
 
-| Limit | Ours |
-|---|---|
-| 8 MiB compressed | 39 KiB |
-| 64 MiB uncompressed | 82 KiB |
-| 2,000 files | 29 |
-| No encrypted, multi-part or ZIP64 archives | None of those |
-
-**Checked that it reproduces:** I unzipped it into an empty folder, added the data and the trained model, and ran `run_pipeline.py`. All four submission files (`submission`, `stage1`, `stage2`, `blend`) came out byte-identical to the ones you have. I didn't re-run the ~17-minute training from the ZIP. Training is the same code that reproduced its results exactly before.
-
-**Small changes I made for the ZIP:**
-- **README:** now explains how the stage-1 and blend files are produced, since your best run may end up being one of them, and lists the library versions we tested with.
-- **`.gitignore`:** I added a `*.zip` rule so the ZIP doesn't get committed by accident; the team's version didn't have one.
-
-These are the last 2 of 3 commits on the local branch `submission-variants`, which isn't pushed yet. I'll push it when your stage-1 and blend scores come back.
-
-**If one of the variants wins:** I'll make it the default `submission.csv` and rebuild the ZIP so it matches.
+Once it's uploaded, send me the score and I'll record it in TEAM_NOTES and on PR #2.
 

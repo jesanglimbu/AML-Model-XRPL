@@ -1,14 +1,24 @@
 # Chat history
 
-Claude Code sessions used to build this project, ordered by last activity.
-Forked sessions start with a copy of their parent's conversation.
-Each file keeps the user prompts and Claude's replies; tool calls are
-collapsed into one-line notes, and tool output and model reasoning are left out.
+Each team member's use of AI on this entry, for the *Decode & Detect* terms (clauses 3.3 and 3.4). Every team member who used AI has a folder with a `README.md` in the same layout:
 
-1. [Claude terminal integration](01-claude-terminal-integration.md) — last active 2026-10-24 10:35 UTC
-2. [XRP Ledger AML alert tracker](02-xrp-ledger-aml-alert-tracker.md) — last active 2026-10-24 10:59 UTC
-3. [XRP Ledger alert ranker](03-xrp-ledger-alert-ranker.md) — last active 2026-10-24 11:23 UTC
-4. [Project overview](04-project-overview.md) — last active 2026-10-24 11:33 UTC
-5. [XRP Ledger alert ranker (fork)](05-xrp-ledger-alert-ranker-fork.md) — last active 2026-10-24 11:36 UTC
-6. [Repository without datasets](06-repository-without-datasets.md) — last active 2026-10-24 12:05 UTC
-7. [XRP Ledger alert ranker (fork 2)](07-xrp-ledger-alert-ranker-fork-2.md) — last active 2026-10-24 12:45 UTC
+1. **Model and settings**: which model and tool, who used it, what for, and whether it runs at runtime (it never does)
+2. **What Claude wrote or changed**: the commits, plus anything outside the repo
+3. **Prompts about the entry**: every prompt, as typed, and what Claude did
+4. **Reproducibility notes**
+
+A `sessions/` folder holds full transcripts where they were exported.
+
+| Team member | Log | Sessions |
+|---|---|---|
+| Jesang | [`jesang/README.md`](jesang/README.md) | 9, with transcripts in [`jesang/sessions/`](jesang/sessions/) |
+| Owen | [`owen/README.md`](owen/README.md) | 1 (no transcript) |
+
+## Rules for every log
+
+- Prompts are copied as typed, including typos.
+- Long pasted material is summarised in square brackets.
+- Teammates' names are replaced with [teammate]; each log names only its own author.
+- Home-folder paths are shortened to `~`. No API keys, tokens or passwords.
+
+No AI service is used when the code runs, and none is needed to reproduce `outputs/submission.csv`.
