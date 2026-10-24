@@ -55,21 +55,24 @@ The starter notebook (`starter_notebook.ipynb` in the training download) runs in
 - **Uploaded to the site: score 33.5, precision 62%, recall 20%** (precision and recall are for the top 1% of scores, about 400 transactions).
 - So of our ~400 highest scores, about 250 are really suspicious, which is about 20% of the ~1,250 suspicious payments. The other 80% are ranked lower down.
 
-## Best run so far
+## Leaderboard runs
 
-- **`xrpl-detector` pipeline (commit `4a66fec`): score 59.2, precision 94%, recall 30%.**
-- Reproduce with `python xrpl-detector/train_model.py` then `python xrpl-detector/run_pipeline.py`, and upload `outputs/submission.csv`.
-- Of our ~400 highest scores, about 375 are really suspicious. That's the top 1% almost entirely correct, and it covers about 30% of all suspicious payments.
-- Next gains: the relay families (aggregate_relay, distributed_relay) are still about 0% recall in cross-validation. They're 200 of the ~1,250 suspicious payments.
-- Team 2's target is to beat it. The README's ideas (longer time windows, `HistGradientBoostingClassifier`, money that returns to where it started) are now in the `alert-ranker` branch below.
+| Run | Score | Top-1% precision | Top-1% recall |
+|---|---|---|---|
+| Starter notebook (baseline) | 33.5 | 62% | 20% |
+| `xrpl-detector`, single model (commit `4a66fec`) | 59.2 | 94% | 30% |
+| **`xrpl-detector`, two-stage ranker `aml_ranker/` (commit `b176cf4`)** | **65.4** | 91% | 29% |
 
-## In progress: `alert-ranker` branch (Team 2)
+- **Best run: 65.4.** Reproduce with `python xrpl-detector/train_model.py` (about 15-20 min) then `python xrpl-detector/run_pipeline.py`, and upload `outputs/submission.csv`.
+- The two-stage ranker ranks the whole list better (score up 6.2), while its top 1% is slightly less clean (91% vs 94%). The top 1% can hold at most ~32% of the ~1,250 suspicious payments, so 29% recall is close to the ceiling.
+- Next gains: the medium cases and the relay families (aggregate_relay, distributed_relay), still about 0% recall in cross-validation.
 
-Replaces the pipeline's scoring model with a two-stage ranker in `xrpl-detector/aml_ranker/`. Nothing downstream changes: `predict.py` still writes the same `predictions.csv` columns, so trails, alert ranking, graphs and case summaries work as before.
+## The two-stage ranker (`xrpl-detector/aml_ranker/`)
 
-- **Same cross-validation for both** (5 folds, grouped by scenario and by relay cohort): current pipeline model **AP 49.1**, new ranker **AP 55.4**. That's the site metric, so expect a better leaderboard run than 59.2, though the test data has batch variations that aren't in training.
-- Per difficulty (new ranker): easy 68.8, medium 7.5, hard 1.5. Top 1%: precision 76%, recall 24%. Relay recall is still about 0% (aggregate_relay 4%, distributed_relay 0%).
-- Not uploaded yet. To reproduce: `python xrpl-detector/train_model.py` (about 15-20 min, prints the CV) then `python xrpl-detector/run_pipeline.py`, and upload `outputs/submission.csv`.
+Replaces the pipeline's scoring model. Nothing downstream changes: `predict.py` still writes the same `predictions.csv` columns, so trails, alert ranking, graphs and case summaries work as before.
+
+- **Same cross-validation for both** (5 folds, grouped by scenario and by relay cohort): previous model **AP 49.1**, two-stage ranker **AP 55.4**. On the leaderboard: 59.2 → 65.4.
+- Per difficulty (cross-validation): easy 68.8, medium 7.5, hard 1.5. Relay recall is still about 0% (aggregate_relay 4%, distributed_relay 0%).
 - What we learned: the easy cases are fast bursts (about 5 min per scenario vs about 60 min for the legitimate look-alikes), and suspicious payments almost always use a sender→receiver pair that hasn't paid before. The medium cases are slow and look like the legitimate decoys. Each relay cohort hides 1 planted scenario among 99 matching legitimate ones, and nothing tried so far separates them (including linking accounts to other suspicious activity), so hard recall is still near 0.
 
 ## What's in this repo
