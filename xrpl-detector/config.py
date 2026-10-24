@@ -23,8 +23,9 @@ SUBMISSION_VARIANTS = {                           # same format, one per scoring
     "blend": f"{OUT_DIR}/submission_blend.csv",     # average rank of the two
     "specialist": f"{OUT_DIR}/submission_specialist.csv",  # blend + 5% medium specialist
     "mule": f"{OUT_DIR}/submission_mule.csv",              # blend + 20% mule network signal (aml_ranker/mule.py)
+    "mule_relay": f"{OUT_DIR}/submission_mule_relay.csv",  # mule x relay look-alike penalty (aml_ranker/relay.py)
 }
-DEFAULT_SCORE = "mule"       # which variant becomes `probability` and submission.csv
+DEFAULT_SCORE = "mule_relay"     # which variant becomes `probability` and submission.csv
 ALERTS_JSON = f"{OUT_DIR}/alerts.json"           # trail_tracker.py -> alert_ranker.py
 RANKED_JSON = f"{OUT_DIR}/ranked_alerts.json"    # alert_ranker.py  -> case_writer.py
 SUMMARIES_JSON = f"{OUT_DIR}/summaries.json"

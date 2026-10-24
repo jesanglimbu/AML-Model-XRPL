@@ -26,6 +26,7 @@ from aml_ranker.data import load_split
 from aml_ranker.features import build_features
 from aml_ranker.model import (AlertRanker, blend, cross_validate, cv_groups, fit_specialist, report,
                                specialist_oof, with_specialist)
+from aml_ranker.relay import fit_relay
 
 
 if __name__ == "__main__":
@@ -56,7 +57,8 @@ if __name__ == "__main__":
     model_dir = os.path.dirname(config.MODEL_PATH)
     os.makedirs(model_dir, exist_ok=True)
     joblib.dump({"model": AlertRanker().fit(X, y, stage1, ep_labels),
-                 "specialist": fit_specialist(X, y, difficulty), "threshold": float(best_t),
+                 "specialist": fit_specialist(X, y, difficulty), "relay": fit_relay(X, labels["family"].to_numpy()),
+                 "threshold": float(best_t),
                  "features": list(X.columns)}, config.MODEL_PATH)
     json.dump({"pr_auc": average_precision_score(y, oof), "f1": best_f1, "precision": best_p,
                "recall": best_r, "threshold": best_t}, open(f"{model_dir}/cv_metrics.json", "w"), indent=2)

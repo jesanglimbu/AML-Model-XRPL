@@ -22,6 +22,7 @@ from aml_ranker.data import load_split
 from aml_ranker.features import build_features
 from aml_ranker.model import blend, with_specialist
 from aml_ranker.mule import neighbour_max, with_mule
+from aml_ranker.relay import with_relay_penalty
 from features import make_features
 
 
@@ -37,9 +38,12 @@ def predict(folder):
     pay = payments.set_index("TRANSACTION_HASH").loc[X["TRANSACTION_HASH"]]
     near = neighbour_max(variants["blend"], pay.sender.to_numpy(), pay.receiver.to_numpy(), pay.t.to_numpy())
     variants["mule"] = with_mule(variants["blend"], near)
+    if "relay" in bundle:  # models trained before the relay classifier existed have none
+        variants["mule_relay"] = with_relay_penalty(variants["mule"], bundle["relay"].predict(X[bundle["features"]]))
     for name, scores in variants.items():
         df[f"score_{name}"] = df["hash"].map(pd.Series(scores, index=X["TRANSACTION_HASH"])).clip(0, 1)
         assert df[f"score_{name}"].notna().all(), "every payment needs a score"
+    assert f"score_{config.DEFAULT_SCORE}" in df, f"model has no {config.DEFAULT_SCORE!r} score: rerun train_model.py"
     df["probability"] = df[f"score_{config.DEFAULT_SCORE}"]
     df["is_suspicious"] = (df["probability"] >= bundle["threshold"]).astype(int)
     return df
