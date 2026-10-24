@@ -3,8 +3,8 @@
 Input : outputs/predictions.csv  (every payment, its probability and burst ids)
 Output: outputs/alerts.json      (schemas.ALERT_FIELDS)
 
-Starter logic: payments the model flags are grouped by their burst id
-(config.BURST_LEVEL -- payments linked by chain / fan-out / fan-in within 3 min).
+The highest-scored config.FLAG_TOP_SHARE of payments (top 1%) are grouped by their burst id
+(config.BURST_LEVEL -- payments linked by chain / fan-out / fan-in within 10 min).
 Each group with >= MIN_ALERT_TXS flagged payments becomes one alert.
 
 Ideas to improve (TODO):
@@ -20,7 +20,8 @@ import config
 
 
 def find_trails(pred):
-    flagged = pred[pred["is_suspicious"] == 1].sort_values("ts")
+    top_n = int(round(config.FLAG_TOP_SHARE * len(pred)))
+    flagged = pred.nlargest(top_n, "probability").sort_values("ts")
     alerts = []
     for _, g in flagged.groupby(f"{config.BURST_LEVEL}_id"):
         if len(g) < config.MIN_ALERT_TXS:

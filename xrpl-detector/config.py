@@ -32,8 +32,10 @@ XRPL_RPC = os.environ.get("XRPL_RPC", "https://xrplcluster.com/")
 N_LEDGERS = 1000
 EXCHANGE_MIN_TAGS = 20
 
-# Trail tracker: which burst grouping defines an alert ("b3m" = payments linked within 3 min)
-BURST_LEVEL = "b3m"
+# Trail tracker: which payments are flagged, and which burst grouping defines an alert.
+# Top 1% + 10-min bursts tested best on train labels: no case split across alerts, 99% purity.
+FLAG_TOP_SHARE = 0.01        # flag the highest-scored 1% of payments (the site's review budget)
+BURST_LEVEL = "b10m"         # payments linked by chain / fan-out / fan-in within 10 min
 MIN_ALERT_TXS = 2            # an alert needs at least this many flagged payments
 
 TOP_N_SUMMARIES = 5
