@@ -65,8 +65,9 @@ The legitimate data contains payments with **the same shapes** as the planted la
 - **Group** flagged payments linked within 10 minutes (chain, fan-out or fan-in) into one alert;
   lone flagged payments are not shown as alerts but keep their score in the submission.
 - **Rank** alerts by 0.5 × average payment score + 0.3 × highest payment score + 0.2 × size.
-- **Report** each top alert with a template (no LLM): what happened, every payment with its hash,
-  plain-English reasons, and a glossary for non-specialists. A citation check confirms every
+- **Report** each top alert with a template (no LLM): the pattern (for example layering or
+  split and recombine), who sent, passed on and collected the money, how fast intermediaries
+  passed it on, the trail graph, every payment with its hash, and a glossary for non-specialists. A citation check confirms every
   transaction hash in a report belongs to that alert.
 
 ## 3. Evaluation

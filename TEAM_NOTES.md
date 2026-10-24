@@ -100,8 +100,6 @@ Replaces the pipeline's scoring model. Nothing downstream changes: `predict.py` 
 
 | File | What it is |
 |---|---|
-| `payments.py` | The organisers' loader: one row per payment, valued in USD. **Not written by us.** |
-| `case_summary.py` | Case summary writer: turns flagged payments into readable reports |
 | `xrpl-detector/` | The pipeline: scoring (`aml_ranker/`), trails, alert ranking, graphs, case reports. See its README |
 | `LICENSE`, `THIRD_PARTY.md` | MIT licence and the list of what we didn't write (for the ZIP) |
 | `.gitignore` | Keeps data, `dnd-env/` and `.env` (API keys) out of git |
@@ -112,24 +110,16 @@ Never commit the data files or API keys. The rules forbid them in the ZIP, and t
 
 **Repo plan (agreed):** keep working in this repo for now. At **15:00** we copy the code into a **new repo without the data folders or old history**, and that new repo is the public one we submit. Before switching, copy your local `decode-and-detect-*` folders somewhere safe, because they won't be in the new repo.
 
-## Using `case_summary.py`
+## Case reports (`xrpl-detector/case_writer.py`, Owen)
 
-```sh
-python case_summary.py --data ../decode-and-detect-test-data --predictions predictions.csv --top 5
-```
+`run_pipeline.py` writes `outputs/summaries.md` for the top 5 alerts (template-based, no LLM). Each report has:
 
-- `--out reports.md` saves the reports to a file
-- `--tx <hash>` summarises one specific payment
-- `--reasons-csv out.csv` writes the predictions with a `reason` column (for example `relay; fan-out`)
+- the **pattern** (fan-out, fan-in, chain, split and recombine, layering, cycle, many-to-many) with a one-line meaning
+- **who's who**: sources → intermediaries → collectors
+- **why it was flagged**: alert size and duration, how fast intermediaries passed money on, the model's scores, and the ranker's reasons without repeats
+- the **trail graph** (`outputs/graphs/<alert>.png`) and every payment with its hash
 
-For each case it lists red flags (relay, pass-on, fan-out, fan-in, cycle, pass-through account, unusually large), describes both accounts' week, and shows where the money went next.
-
-### Where it connects to your parts
-
-- **Team 1:** `follow_money()` in `case_summary.py` is a simple placeholder. Replace it with your trail tracker. It receives `(df, start_account, start_time, start_amount)` and should return a list of steps with `hop`, `from`, `to`, `usd`, `minutes_later`.
-- **Team 2:** the case summary picks its cases from your `predictions.csv`. Share each new version so the reports use your latest scores.
-
-Note: with only 700 accounts making 40,000 payments, almost every account is busy, so the red flags fire often. They explain a case; the score from team 2 decides what's suspicious.
+The top of the file has a "a flag is not proof" note and a glossary. Open `outputs/summaries.md` in VS Code's Markdown preview to see the graphs inline.
 
 ## Alerts: one system
 
