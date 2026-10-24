@@ -7,5 +7,5 @@
   (`HistGradientBoostingClassifier`, `StratifiedGroupKFold`, metrics), SciPy (`connected_components`),
   NetworkX, Matplotlib, joblib.
 - **AI assistance**: parts of the code and documentation were written with Claude (Anthropic)
-  via Claude Code.
+  via Claude Code. Owen's prompts and what they produced: [`OWEN_AI_PROMPTS.md`](OWEN_AI_PROMPTS.md).
 - No pre-trained models, external data, external labels or outside services are used.

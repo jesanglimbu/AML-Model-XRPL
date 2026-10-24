@@ -93,6 +93,8 @@ Never commit the data files or API keys. The rules forbid them in the ZIP, and t
 
 **Heads-up:** the `decode-and-detect-*` data folders are currently tracked in git (they were added before the `.gitignore`). Leave them out of the ZIP, and agree as a team before removing them from the repo.
 
+**Repo plan (agreed):** keep working in this repo for now. At **15:00** we copy the code into a **new repo without the data folders or old history**, and that new repo is the public one we submit. Before switching, copy your local `decode-and-detect-*` folders somewhere safe, because they won't be in the new repo.
+
 ## Using `case_summary.py`
 
 ```sh
