@@ -1,6 +1,6 @@
 # Decode & Detect: report
 
-**Team:** Pookies of The Caribbean· **Captain:** Mohamed Mustafa Avoor · **Members:** Jesang Limbu, Hemayu Vikeekumar, Owen Leung, Mohamed Mustafa Avoor
+**Team:** Pookies of The Caribbean · **Captain:** Mohamed Mustafa Avoor · **Members:** Jesang Limbu, Hemayu Vikeekumar, Owen Leung, Mohamed Mustafa Avoor
 **Submitted commit:** _TODO (record after the final change)_
 
 Our tool gives every payment on the synthetic ledger a suspicion score from 0 to 1, groups the
