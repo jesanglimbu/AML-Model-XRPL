@@ -26,7 +26,7 @@ def rank(alerts, pred):
     for a in alerts:
         p = np.array(a["probabilities"])
         size_bonus = min(len(p), 10) / 100                     # up to +0.10
-        score = min(1.0, 0.6 * p.max() + 0.4 * p.mean() + size_bonus)
+        score = 0.5*p.mean() +0.3*p.max() +0.2* min(len(p), 20) /20
         reasons = Counter()
         for h in a["tx_hashes"]:
             for r in reasons_for(by_hash.loc[h]):
