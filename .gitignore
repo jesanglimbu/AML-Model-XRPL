@@ -23,3 +23,7 @@ node_modules/
 .DS_Store
 # Submission ZIPs
 *.zip
+
+# Organisers' data folders
+decode-and-detect-training-data/
+decode-and-detect-test-data/
