@@ -52,7 +52,8 @@ The starter notebook (`starter_notebook.ipynb` in the training download) runs in
 ## Baseline
 
 - Starter notebook, unchanged: **24.6** on held-back training data.
-- Packaged for upload as `baseline-code.zip` + `baseline-predictions.csv`. Check the leaderboard for its score on the test data.
+- **Uploaded to the site: score 33.5, precision 62%, recall 20%** (precision and recall are for the top 1% of scores, about 400 transactions).
+- So of our ~400 highest scores, about 250 are really suspicious, which is about 20% of the ~1,250 suspicious payments. The other 80% are ranked lower down.
 - Team 2's target is to beat it. Ideas from the README: longer time windows, `HistGradientBoostingClassifier` instead of logistic regression, money that returns to where it started.
 
 ## What's in this repo
