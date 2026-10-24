@@ -49,9 +49,10 @@ if __name__ == "__main__":
     recall = df.assign(hit=(oof >= best_t)).query("is_suspicious == 1").groupby("family")["hit"].mean()
     print("Recall by laundering family:\n" + recall.round(2).to_string())
 
-    os.makedirs("models", exist_ok=True)
+    model_dir = os.path.dirname(config.MODEL_PATH)
+    os.makedirs(model_dir, exist_ok=True)
     joblib.dump({"model": new_model().fit(X, y), "threshold": float(best_t), "features": ALL_FEATURES},
                 config.MODEL_PATH)
     json.dump({"pr_auc": average_precision_score(y, oof), "f1": best_f1, "precision": best_p,
-               "recall": best_r, "threshold": best_t}, open("models/cv_metrics.json", "w"), indent=2)
+               "recall": best_r, "threshold": best_t}, open(f"{model_dir}/cv_metrics.json", "w"), indent=2)
     print(f"Saved {config.MODEL_PATH}")

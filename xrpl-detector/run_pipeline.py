@@ -5,6 +5,7 @@
     python run_pipeline.py data/train  # on the training data (demo / debugging)
 """
 import json
+import os
 import sys
 
 import alert_ranker
@@ -16,6 +17,9 @@ import trail_graph
 import trail_tracker
 
 folder = sys.argv[1] if len(sys.argv) > 1 else config.TEST_DIR
+folder = {"train": config.TRAIN_DIR, "data/train": config.TRAIN_DIR,
+          "test": config.TEST_DIR, "data/test": config.TEST_DIR}.get(folder, folder)
+os.makedirs(config.OUT_DIR, exist_ok=True)
 
 print(f"1/5 scoring transactions in {folder}...")
 pred = predict.predict(folder)

@@ -1,10 +1,19 @@
 """Shared settings. Change thresholds HERE so everyone uses the same numbers."""
 import os
 
-TRAIN_DIR = "data/train"     # transactions.parquet, transfers.parquet, market_rates.csv, labels.csv
-TEST_DIR = "data/test"       # same files, no labels
-OUT_DIR = "outputs"
-MODEL_PATH = "models/model.joblib"
+# Paths are relative to the repo, so scripts work whichever folder you run them from.
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def _first_existing(*folders):
+    return next((f for f in folders if os.path.isdir(f)), folders[0])
+
+
+# Uses data/train and data/test if you made them, otherwise the organisers' folders in the repo.
+TRAIN_DIR = _first_existing(f"{ROOT}/data/train", f"{ROOT}/decode-and-detect-training-data/train")
+TEST_DIR = _first_existing(f"{ROOT}/data/test", f"{ROOT}/decode-and-detect-test-data")
+OUT_DIR = f"{ROOT}/outputs"
+MODEL_PATH = f"{ROOT}/models/model.joblib"
 
 PREDICTIONS_CSV = f"{OUT_DIR}/predictions.csv"   # SUBMISSION: one row per transaction
 ALERTS_JSON = f"{OUT_DIR}/alerts.json"           # trail_tracker.py -> alert_ranker.py
