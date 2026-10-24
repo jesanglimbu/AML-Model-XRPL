@@ -2,7 +2,7 @@
 
 **Team:** Pookies of The Caribbean · **Captain:** Mohamed Mustafa Avoor · **Members:** Jesang Limbu, Hemayu Vikeekumar, Owen Leung, Mohamed Mustafa Avoor
 
-**Submitted commit:** _TODO (record after the final change)_
+**Submitted commit:** `8ff6d78` (the code and model behind the 67.0 leaderboard run; later commits change documentation only)
 
 Our tool gives every payment on the synthetic ledger a suspicion score from 0 to 1, groups the
 most suspicious payments into money trails, ranks them as alerts, and writes a plain-English case

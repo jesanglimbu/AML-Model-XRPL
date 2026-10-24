@@ -13,8 +13,9 @@ matplotlib 3.9.4, joblib 1.5.3). Use these versions to reproduce the submitted f
 same code with newer versions (Python 3.14, scikit-learn 1.9.1) gives slightly different scores
 (blend 65.9 instead of 66.5 on the leaderboard).
 
-Put the organisers' data in `decode-and-detect-training-data/` and `decode-and-detect-test-data/`
-in this folder (or `data/train` and `data/test`), then:
+Download both data packages from https://hackathon.ukcbt.org and put them in
+`decode-and-detect-training-data/` and `decode-and-detect-test-data/` in this folder (or
+`data/train` and `data/test`), then:
 
 ```sh
 python3.9 -m venv .venv
@@ -32,6 +33,10 @@ other variants we compared, in the same format: `submission_stage1.csv` (65.6),
 
 Training takes about 25-30 minutes and the pipeline about a minute on a laptop CPU (measured on an
 Apple Silicon MacBook). Results are deterministic (fixed seeds).
+
+**Computing requirements:** CPU only, no GPU. No external services or API keys; internet is needed
+only for `pip install`. The trained model is not included (too large for the ZIP limit):
+`train_model.py` rebuilds it identically, see [`THIRD_PARTY.md`](THIRD_PARTY.md#model-weights).
 
 ## Licence and credits
 
