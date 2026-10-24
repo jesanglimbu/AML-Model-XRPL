@@ -66,6 +66,7 @@ The starter notebook (`starter_notebook.ipynb` in the training download) runs in
 - What the 65.4 run caught, from the site's breakdown: easy **40%** of 800, medium **10%** of 225, observable hard **0%** of 200, ambiguous **0%** of 25. That adds up to about 342 payments, a little under the ~363 implied by 29% recall, so check which cut-off the breakdown uses before comparing runs on it.
 - **Best run: 65.4.** Reproduce with `python xrpl-detector/train_model.py` (about 15-20 min) then `python xrpl-detector/run_pipeline.py`, and upload `outputs/submission.csv`.
 - The two-stage ranker ranks the whole list better (score up 6.2), while its top 1% is slightly less clean (91% vs 94%). The top 1% can hold at most ~32% of the ~1,250 suspicious payments, so 29% recall is close to the ceiling.
+- **Scoring variants to compare on the leaderboard:** `run_pipeline.py` on the test data also writes `outputs/submission_stage1.csv` (stage-1 model alone), `submission_stage2.csv` (the two-stage ranker, identical to the 65.4 upload) and `submission_blend.csv` (average rank of the two). In CV stage 2 helped medium and hard but hurt easy (easy AP 72.3 → 68.8), and easy is most of the score, so stage 1 and the blend are worth one upload each.
 - Next gains: the medium cases and the relay families (aggregate_relay, distributed_relay), still about 0% recall in cross-validation.
 
 ## The two-stage ranker (`xrpl-detector/aml_ranker/`)

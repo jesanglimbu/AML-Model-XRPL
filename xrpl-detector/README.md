@@ -46,7 +46,7 @@ market_rates.csv, labels.csv) and `data/test/` (same files, no labels).
 ## Run
 ```
 python train_model.py              # cross-validated scores + saves the model (~15-20 min)
-python run_pipeline.py             # everything on data/test
+python run_pipeline.py             # everything on data/test (+ submission_stage1/stage2/blend.csv)
 python run_pipeline.py data/train  # everything on training data (demo/debug)
 ```
 
