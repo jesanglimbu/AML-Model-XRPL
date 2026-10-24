@@ -17,6 +17,11 @@ MODEL_PATH = f"{ROOT}/models/model.joblib"
 
 PREDICTIONS_CSV = f"{OUT_DIR}/predictions.csv"   # one row per transaction, with every feature
 SUBMISSION_CSV = f"{OUT_DIR}/submission.csv"     # UPLOAD THIS: TRANSACTION_HASH,score (test data only)
+SUBMISSION_VARIANTS = {                           # same format, one per scoring variant (test data only)
+    "stage1": f"{OUT_DIR}/submission_stage1.csv",   # stage-1 model alone
+    "stage2": f"{OUT_DIR}/submission_stage2.csv",   # two-stage ranker alone
+    "blend": f"{OUT_DIR}/submission_blend.csv",     # average rank of the two (= submission.csv, the default)
+}
 ALERTS_JSON = f"{OUT_DIR}/alerts.json"           # trail_tracker.py -> alert_ranker.py
 RANKED_JSON = f"{OUT_DIR}/ranked_alerts.json"    # alert_ranker.py  -> case_writer.py
 SUMMARIES_JSON = f"{OUT_DIR}/summaries.json"

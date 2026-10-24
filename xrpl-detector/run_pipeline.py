@@ -29,6 +29,7 @@ if folder == config.TEST_DIR:
     submission = pred[["hash", "probability"]].rename(columns={"hash": "TRANSACTION_HASH", "probability": "score"})
     submission.to_csv(config.SUBMISSION_CSV, index=False)
     print(f"    upload file -> {config.SUBMISSION_CSV}")
+    predict.write_submissions(pred)
 
 print("2/5 grouping flagged payments into trails...")
 alerts = trail_tracker.find_trails(pred)

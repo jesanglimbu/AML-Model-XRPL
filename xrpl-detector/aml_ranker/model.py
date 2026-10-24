@@ -76,10 +76,27 @@ class AlertRanker:
         return self
 
     def predict(self, X, ep_labels):
+        return self.predict_stages(X, ep_labels)[1]
+
+    def predict_stages(self, X, ep_labels):
+        """(stage-1 scores, stage-2 scores) for the same payments."""
         X = X[self.columns]
         stage1 = self.stage1.predict(X)
-        X2 = _stage2_inputs(X, stage1, ep_labels)
-        return self.stage2.predict(X2)
+        return stage1, self.stage2.predict(_stage2_inputs(X, stage1, ep_labels))
+
+
+def blend(stage1, stage2):
+    """Average of the two stages' rank percentiles, so neither stage's scale dominates.
+
+    The average rank is then mapped onto stage 2's score distribution. That keeps the
+    blend's ordering (all the site's metric looks at) while the values still read like
+    probabilities, so the alert threshold and the case reports stay meaningful.
+    """
+    rank = (pd.Series(stage1).rank(pct=True).to_numpy() + pd.Series(stage2).rank(pct=True).to_numpy()) / 2
+    mapped = np.empty(len(rank))
+    mapped[np.argsort(rank, kind="stable")] = np.sort(stage2)
+    # payments with the same average rank share one value, so ties stay ties
+    return pd.Series(mapped).groupby(rank).transform("mean").to_numpy()
 
 
 def report(y, scores, difficulty):
