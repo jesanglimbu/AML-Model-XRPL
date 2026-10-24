@@ -148,5 +148,5 @@ internet connection, paid service or API key is needed.
 - **Not ours:** the organisers' dataset, starter notebook and `payments.py`, and open-source
   libraries. Full list with licences in [`THIRD_PARTY.md`](THIRD_PARTY.md).
 - **AI assistance:** Claude (Anthropic) via Claude Code helped write code and documentation,
-  including this report. Prompts: [`OWEN_AI_PROMPTS.md`](OWEN_AI_PROMPTS.md). No AI is used
+  including this report. Prompts: [`chat-history/`](chat-history/README.md). No AI is used
   when the tool runs.

@@ -1,6 +1,6 @@
 # Claude terminal integration
 
-_2026-10-24 10:34 → 2026-10-24 10:35 UTC_
+_Desktop app · 2026-10-24 10:34 → 2026-10-24 10:35 UTC_
 
 
 ## 🧑 User
