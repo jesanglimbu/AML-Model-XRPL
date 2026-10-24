@@ -8,8 +8,8 @@ Our tool gives every payment on the synthetic ledger a suspicion score from 0 to
 most suspicious payments into money trails, ranks them as alerts, and writes a plain-English case
 report for each one, citing the transaction hashes behind every claim.
 
-**Best leaderboard score: 65.9** (100 × average precision). Of the 1% of payments we rank most
-suspicious, 91% are labelled suspicious.
+**Best leaderboard score: 66.8** (100 × average precision). Of the 1% of payments we rank most
+suspicious, 92% are labelled suspicious.
 
 > **Important:** a flag is a reason to investigate, not evidence of a crime. This is an
 > experimental prototype tested only on synthetic data. See [Limitations](#limitations).
@@ -33,7 +33,8 @@ suspicious, 91% are labelled suspicious.
 ```
 payments ──► score every payment ──► top 1% ──► group into trails ──► rank alerts ──► case reports
              aml_ranker/             trail_tracker.py   alert_ranker.py   case_writer.py
-             (two-stage ranker)      (10-min bursts)                      + trail_graph.py
+             (two-stage ranker       (10-min bursts)                      + trail_graph.py
+              + mule network)
 ```
 
 ### What separates laundering from legitimate look-alikes
@@ -56,8 +57,12 @@ The legitimate data contains payments with **the same shapes** as the planted la
   3 seeds).
 - **Stage 2:** adds how suspicious each payment's episode-mates look to stage 1, so a planted
   pattern lifts all of its payments together.
-- **Final score:** the average rank of stage 1 and stage 2. Stage 2 is better on medium and hard
+- **Blend:** the average rank of stage 1 and stage 2. Stage 2 is better on medium and hard
   cases and stage 1 on easy ones, so the blend beats both.
+- **Final score: mule network signal** (`aml_ranker/mule.py`). Mules receive suspicious money and
+  pass it on, so for each payment we take the highest blend score among the *other* payments
+  touching the same sender or receiver within ±1 hour, and mix its rank into the blend at 20%.
+  Payments in the same scheme pull each other up. It uses no labels and adds no training time.
 
 ### Alerts and case reports
 
@@ -80,7 +85,9 @@ The legitimate data contains payments with **the same shapes** as the planted la
 | Single gradient-boosting model | 59.2 | 94% | 30% |
 | Two-stage ranker | 65.4 | 91% | 29% |
 | Stage 1 alone | 65.6 | 92% | – |
-| **Blend of stage 1 and stage 2 (submitted)** | **65.9** | 91% | – |
+| Blend of stage 1 and stage 2 (Python 3.14, scikit-learn 1.9.1) | 65.9 | 91% | – |
+| Blend of stage 1 and stage 2 (Python 3.9.6, scikit-learn 1.6.1) | 66.5 | – | – |
+| **Blend + mule network signal (Python 3.9.6, scikit-learn 1.6.1; submitted)** | **66.8** | 92% | 30% |
 
 The top 1% holds about 400 payments, so it can contain at most about 32% of the ~1,250
 suspicious payments. 29–30% recall is close to that ceiling.
@@ -101,6 +108,12 @@ scores would be unrealistically high.
 Recall by family at the F1-best threshold: strongest on cycle (85%), chain and fan-out-in (79%);
 weakest on the relay families (aggregate relay 4%, distributed relay 0%).
 
+**Mule network signal**, same folds (measured on Python 3.9 / scikit-learn 1.6.1, where the blend
+scores 56.86): with the mule signal **57.75** (easy 75.0 → 75.6, medium 4.7 → 5.2, hard 1.1 → 1.2).
+We tested windows of ±10 min, 30 min, 1 h, 2 h, 6 h and 1 day at weights of 5–40%, and applying the
+signal repeatedly; ±1 h at 20% was best (30% within 0.02). On the leaderboard, from the same
+machine: blend **66.5**, blend + mule **66.8** (+0.3).
+
 ### Alert quality
 
 Measured on the training labels with out-of-fold scores, before the final model (comparing
@@ -117,7 +130,7 @@ cases. Longer windows start merging different cases (purity falls).
 
 ## 4. Limitations
 
-- **A flag is not proof.** About 9% of our top 1% are false positives. A score is a reason for a
+- **A flag is not proof.** About 8% of our top 1% are false positives. A score is a reason for a
   human to look, not a finding of money laundering or of any wrongdoing.
 - **Synthetic data only.** Good performance here does not show the tool would detect real fraud
   or laundering. Real data would need new testing, and data-protection checks before use.

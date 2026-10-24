@@ -24,7 +24,7 @@ REPORT_INTRO = """These reports explain why groups of payments were flagged as p
 They are based on a week of **synthetic** payments on a fictional XRPL-style ledger, valued in
 US dollars. Nothing here is a real person, account or allegation.
 
-> **A flag is a reason to investigate, not evidence of wrongdoing.** Roughly 1 in 10 of the payments
+> **A flag is a reason to investigate, not evidence of wrongdoing.** Roughly 1 in 12 of the payments
 > our model ranks most suspicious is a false alarm, so every case needs a human review.
 
 Each case is one **alert**: a group of linked payments our model flagged together. The **risk score**

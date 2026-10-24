@@ -63,13 +63,16 @@ The starter notebook (`starter_notebook.ipynb` in the training download) runs in
 | `xrpl-detector`, single model (commit `4a66fec`) | 59.2 | 94% | 30% |
 | `xrpl-detector`, two-stage ranker `aml_ranker/` (commit `b176cf4`) | 65.4 | 91% | 29% |
 | `xrpl-detector`, stage-1 model alone (`submission_stage1.csv`) | 65.6 | 92% | not recorded |
-| **`xrpl-detector`, blend of stage 1 and stage 2 (`submission_blend.csv`, now the default)** | **65.9** | 91% | not recorded |
+| `xrpl-detector`, blend of stage 1 and stage 2 (`submission_blend.csv`) | 65.9 | 91% | not recorded |
 | `xrpl-detector`, blend + 5% medium specialist (`submission_specialist.csv`) | 65.9 | not recorded | not recorded |
+| `xrpl-detector`, blend on Owen's Mac (Python 3.9.6, scikit-learn 1.6.1) | 66.5 | not recorded | not recorded |
+| **`xrpl-detector`, blend + mule network signal (`submission_mule.csv`, now the default), Owen's Mac** | **66.8** | 92% | 30% |
 
 - What the 65.4 run caught, from the site's breakdown: easy **40%** of 800, medium **10%** of 225, observable hard **0%** of 200, ambiguous **0%** of 25. That adds up to about 342 payments, a little under the ~363 implied by 29% recall, so check which cut-off the breakdown uses before comparing runs on it.
-- **Best run: 65.9** (the blend). Reproduce with `python xrpl-detector/train_model.py` (about 20 min) then `python xrpl-detector/run_pipeline.py`, and upload `outputs/submission.csv`.
+- **Best run: 66.8** (blend + mule network signal, `submission_mule.csv`, now the default; made on Owen's Mac, Python 3.9). Same Mac's blend scored **66.5**, so the mule signal adds **+0.3**; the other +0.6 over 65.9 comes from library versions (Python 3.9.6 / scikit-learn 1.6.1 beat 3.14 / 1.9.1 here). **So the final upload should be made with the Mac's versions**, and the README must document them.
+- Previous best: 65.9 (the blend). Reproduce with `python xrpl-detector/train_model.py` (about 20 min) then `python xrpl-detector/run_pipeline.py`, and upload `outputs/submission.csv`.
 - The two-stage ranker ranks the whole list better (score up 6.2), while its top 1% is slightly less clean (91% vs 94%). The top 1% can hold at most ~32% of the ~1,250 suspicious payments, so 29% recall is close to the ceiling.
-- **Scoring variants:** `run_pipeline.py` on the test data also writes `outputs/submission_stage1.csv` (stage-1 model alone, 65.6), `submission_stage2.csv` (two-stage ranker alone, 65.4) and `submission_blend.csv` (average rank of the two, 65.9). The blend is now the default `probability`, so `submission.csv`, the alerts and the case reports all use it; its values are mapped onto stage 2's score distribution, so they still read like probabilities and rank exactly like the 65.9 upload. In CV stage 2 helped medium and hard but hurt easy (easy AP 72.3 → 68.8), which is why mixing in stage 1 helps.
+- **Scoring variants:** `run_pipeline.py` on the test data also writes `outputs/submission_stage1.csv` (stage-1 model alone, 65.6), `submission_stage2.csv` (two-stage ranker alone, 65.4) and `submission_blend.csv` (average rank of the two, 65.9). The blend was the default `probability` until the mule signal beat it, so `submission.csv`, the alerts and the case reports all use it; its values are mapped onto stage 2's score distribution, so they still read like probabilities and rank exactly like the 65.9 upload. In CV stage 2 helped medium and hard but hurt easy (easy AP 72.3 → 68.8), which is why mixing in stage 1 helps.
 - Next gains: the medium cases and the relay families (aggregate_relay, distributed_relay), still about 0% recall in cross-validation.
 
 ## Medium-case experiments (Owen's request, 13:00)
@@ -87,7 +90,7 @@ Rule: keep an experiment only if its CV AP beats the current default (the blend)
 - **D, retrained with 3 seeds: CV AP 57.4 vs 55.7 for the blend (+1.7).** Easy 71.1 → 73.7, medium 7.6 → 6.7, hard unchanged.
 - D is a second model trained only on medium positives vs all negatives, mixed in by rank. The mix weight has a flat plateau from 4% to 7.5% (all about 57); 20% and above clearly hurt.
 - Honest caveat: **none of these improved the medium cases.** The specialist ranks medium cases worse than the main model; its gain comes from reordering the easy cases. The medium cases are slow and look like the legitimate decoys, and with only 27 medium scenarios in training no feature or weighting found so far separates them.
-- `run_pipeline.py` writes D as `outputs/submission_specialist.csv`. **On the leaderboard it tied the blend at 65.9**, so its CV gain didn't carry over to the test week and **the blend stays the default** (simpler, and what `REPORT.md` describes). To switch anyway, set `DEFAULT_SCORE = "specialist"` in `xrpl-detector/config.py` and rerun `run_pipeline.py` (no retraining needed).
+- `run_pipeline.py` writes D as `outputs/submission_specialist.csv`. **On the leaderboard it tied the blend at 65.9**, so its CV gain didn't carry over to the test week and the blend stayed the default (now replaced by the mule signal). To switch anyway, set `DEFAULT_SCORE = "specialist"` in `xrpl-detector/config.py` and rerun `run_pipeline.py` (no retraining needed).
 
 ## The two-stage ranker (`xrpl-detector/aml_ranker/`)
 
