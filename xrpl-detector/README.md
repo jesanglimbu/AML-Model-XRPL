@@ -61,6 +61,8 @@ python run_pipeline.py data/train  # everything on training data (demo/debug)
 - `model.py`: scikit-learn `HistGradientBoostingClassifier`s (3 seeds). Stage 2 adds
   how suspicious each payment's episode-mates look according to stage 1, so a planted
   pattern lifts all of its payments together.
+  The uploaded score is the **blend**: the average rank of stage 1 and stage 2 (65.9 on
+  the leaderboard, vs 65.6 for stage 1 and 65.4 for stage 2 alone).
 
 The top-level `features.py` is still used by `predict.py` for the contract columns in
 `predictions.csv` and for the alert reasons.

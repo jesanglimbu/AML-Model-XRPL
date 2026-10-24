@@ -8,7 +8,8 @@ plus every feature -- the trail tracker and ranker read this file.
 The probability comes from the two-stage ranker in aml_ranker/; features.py still
 supplies the contract columns and the features behind each alert's reasons.
 On the test data it also writes one upload file per scoring variant
-(config.SUBMISSION_VARIANTS): stage 1 only, stage 2 only (= probability), and a blend.
+(config.SUBMISSION_VARIANTS): stage 1 only, stage 2 only, and the blend of the two,
+which is the default probability (65.9 on the leaderboard vs 65.6 and 65.4).
 """
 import sys
 
@@ -30,7 +31,7 @@ def predict(folder):
     for name, scores in (("stage1", stage1), ("stage2", stage2), ("blend", blend(stage1, stage2))):
         df[f"score_{name}"] = df["hash"].map(pd.Series(scores, index=X["TRANSACTION_HASH"])).clip(0, 1)
         assert df[f"score_{name}"].notna().all(), "every payment needs a score"
-    df["probability"] = df["score_stage2"]
+    df["probability"] = df["score_blend"]
     df["is_suspicious"] = (df["probability"] >= bundle["threshold"]).astype(int)
     return df
 
