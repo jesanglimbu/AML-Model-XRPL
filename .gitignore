@@ -12,8 +12,6 @@ __pycache__/
 # Model + generated outputs (everyone regenerates these)
 models/*.joblib
 outputs/
-alert_tracker_data/
-handover.md
 
 # Node
 node_modules/
