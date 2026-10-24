@@ -4,27 +4,18 @@ Input : outputs/ranked_alerts.json
 Output: outputs/summaries.json + outputs/summaries.md
 
 Rule: EVERY claim cites a real transaction hash from the alert.
-<<<<<<< HEAD
-  1. Facts built in code (amounts, times, hashes) -> can't be wrong.
-  2. Template -> English (works with no API key).
-=======
   1. Facts built in code (amounts, times, hashes, roles, pattern) -> can't be wrong.
   2. Template -> English (works with no API key, no LLM at runtime).
->>>>>>> 562c84ea58325bf504343922fb5ef977c8606a69
   3. OPTIONAL (TODO): polish_with_llm() rewrites wording; verify_citations()
      rejects any output that mentions a hash not in the alert.
 """
 import json
-<<<<<<< HEAD
-import re
-=======
 import os
 import re
 import statistics
 from datetime import datetime, timezone
 
 import networkx as nx
->>>>>>> 562c84ea58325bf504343922fb5ef977c8606a69
 
 import config
 
@@ -33,17 +24,12 @@ REPORT_INTRO = """These reports explain why groups of payments were flagged as p
 They are based on a week of **synthetic** payments on a fictional XRPL-style ledger, valued in
 US dollars. Nothing here is a real person, account or allegation.
 
-<<<<<<< HEAD
-Each case is one **alert**: a group of linked payments our model flagged together. The **risk score**
-(0 to 1) ranks the alerts, riskiest first. The reasons explain what stands out.
-=======
 > **A flag is a reason to investigate, not evidence of wrongdoing.** Roughly 1 in 12 of the payments
 > our model ranks most suspicious is a false alarm, so every case needs a human review.
 
 Each case is one **alert**: a group of linked payments our model flagged together. The **risk score**
 (0 to 1) ranks the alerts, riskiest first. Each report names the pattern, shows who sent, passed on
 and collected the money, explains why it was flagged, and lists every payment with its hash.
->>>>>>> 562c84ea58325bf504343922fb5ef977c8606a69
 
 """
 
@@ -53,14 +39,10 @@ GLOSSARY = """## How to read these reports
 |---|---|
 | Risk score | How suspicious the whole alert looks, from 0 (normal) to 1 (very suspicious). Used to decide which cases to look at first |
 | Model probability | How suspicious one single payment looks to our model, from 0 to 1 |
-<<<<<<< HEAD
-| Linked payments / burst | Payments connected to each other (the same money moving on, splitting or joining) within a few minutes |
-=======
 | Linked payments / burst | Payments connected to each other (the same money moving on, splitting or joining) within 10 minutes |
 | Pattern | The shape of the money flow: fan-out (one account splits money), fan-in (many pay one), chain (passed along a line), split and recombine, layering (through intermediaries), or cycle (money comes back) |
 | Source / intermediary / collector | Accounts that only send, that receive and send on, and that only receive, within the alert |
 | Passed on after N min | How long an intermediary held money before sending it on. Minutes, or less, is typical of mules |
->>>>>>> 562c84ea58325bf504343922fb5ef977c8606a69
 | Passed funds on within N min | The receiver sent money onward almost immediately, the typical sign of a money mule or relay account |
 | Forwarded funds N min after receiving them | The sender was passing on money it had only just been given, rather than spending its own |
 | Forwarded N% of the amount it last received | The account kept almost nothing and passed nearly everything on (a pass-through account) |
@@ -83,14 +65,6 @@ def cite(h):
     return f"`tx {h[:12]}`"
 
 
-<<<<<<< HEAD
-def template_summary(a):
-    n = len(a["tx_hashes"])
-    total = sum(a["amounts_usd"])
-    lines = [
-        f"### {a['alert_id']} — risk {a['risk_score']:.2f}",
-        "",
-=======
 def seconds(iso):
     return datetime.strptime(iso, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc).timestamp()
 
@@ -180,17 +154,12 @@ def template_summary(a):
         "",
         f"**Pattern: {name}** — {meaning}.",
         "",
->>>>>>> 562c84ea58325bf504343922fb5ef977c8606a69
         f"Between {a['times'][0][11:16]} and {a['times'][-1][11:16]} UTC on {a['times'][0][:10]}, "
         f"**{n} linked payments** worth **${total:,.0f}** moved between **{len(a['accounts'])} accounts** "
         f"in **{a['minutes_total']} minutes**. It started when `{short(a['edges'][0][0])}` paid "
         f"`{short(a['edges'][0][1])}` {cite(a['tx_hashes'][0])} and ended with a payment to "
         f"`{short(a['edges'][-1][1])}` {cite(a['tx_hashes'][-1])}.",
         "",
-<<<<<<< HEAD
-        "**Payments:**",
-    ]
-=======
         f"**Who's who:** {accounts_text(sources, 'source', 'sources')} → "
         f"{accounts_text(middle, 'intermediary', 'intermediaries')} → "
         f"{accounts_text(collectors, 'collector', 'collectors')}.",
@@ -202,16 +171,11 @@ def template_summary(a):
     if graph:
         lines += ["", graph]
     lines += ["", "**Payments:**"]
->>>>>>> 562c84ea58325bf504343922fb5ef977c8606a69
     for i, h in enumerate(a["tx_hashes"]):
         s, d = a["edges"][i]
         lines.append(f"{i + 1}. {a['times'][i][11:19]} `{short(s)}` → `{short(d)}`: "
                      f"{a['amounts'][i]:,.2f} {a['assets'][i]} (${a['amounts_usd'][i]:,.0f}), "
                      f"model probability {a['probabilities'][i]:.2f} {cite(h)}")
-<<<<<<< HEAD
-    lines += ["", "**Why it was flagged:** " + "; ".join(a["reasons"]) + "."]
-=======
->>>>>>> 562c84ea58325bf504343922fb5ef977c8606a69
     return "\n".join(lines)
 
 
