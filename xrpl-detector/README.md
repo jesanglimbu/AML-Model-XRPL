@@ -5,7 +5,7 @@ trails, ranks the trails, and writes a case report where every claim cites a
 transaction hash.
 
 ```
-data/train ──► train_model.py ──► models/model.joblib
+data/train ──► train_model.py ──► models/model.joblib     (two-stage ranker, aml_ranker/)
 data/test  ──► predict.py ──► trail_tracker.py ──► alert_ranker.py ──► case_writer.py
                predictions.csv    alerts.json         ranked_alerts.json   summaries.md
                                   trail_graph.py ──► graphs/A001.png
@@ -17,11 +17,13 @@ cycle…), so shape alone can't separate them. What does separate them is **spee
 suspicious money moves about 1 minute per hop vs about 10 minutes in benign lookalikes.
 So the features measure velocity: how fast a receiver passes funds on, how
 many linked payments happen in 3/10-minute bursts, how much of the amount is passed on.
+A second signal is **new relationships**: legitimate commerce repeats the same
+sender→receiver pairs, planted flows almost never do.
 
 ## Who owns what
 | File | Owner |
 |---|---|
-| `features.py`, `train_model.py`, `alert_ranker.py` | Person C (ranker) |
+| `aml_ranker/` (scoring model), `features.py`, `train_model.py`, `alert_ranker.py` | Person C (ranker) |
 | `trail_tracker.py` | Person A (trail tracker) |
 | `trail_graph.py` | Person B (trail tracker) |
 | `case_writer.py` | Person D (case summaries) |
@@ -43,13 +45,31 @@ market_rates.csv, labels.csv) and `data/test/` (same files, no labels).
 
 ## Run
 ```
-python train_model.py              # cross-validated scores + saves the model
+python train_model.py              # cross-validated scores + saves the model (~15-20 min)
 python run_pipeline.py             # everything on data/test
 python run_pipeline.py data/train  # everything on training data (demo/debug)
 ```
 
-## Current score (5-fold CV, grouped by scenario)
-PR-AUC 0.52, ROC-AUC 0.90, F1 0.57 (precision 0.62, recall 0.53).
-Strong on chain (82%), cycle (74%), fan-out-in (72%). Weak on the two "relay" cohorts
-(~0% recall): their suspicious 1% look statistically identical to the benign 99% on
-every feature tried so far. That's the biggest open problem.
+## How payments are scored (`aml_ranker/`)
+- `data.py`: one row per payment (`ACCOUNT -> Destination`), valued in USD; the first
+  transfer leg gives the actual source cost.
+- `features.py`: ~220 features per payment from the split's own week: value and
+  conversion legs, new vs recurring pair, each account's weekly profile, burst counts
+  from 1 min to 2 days, money in just before / out just after, and **episodes** (groups
+  formed by linking an account's consecutive payments within 30 s … 1 h, and for new
+  relationships only within 30 min … 1 day).
+- `model.py`: scikit-learn `HistGradientBoostingClassifier`s (3 seeds). Stage 2 adds
+  how suspicious each payment's episode-mates look according to stage 1, so a planted
+  pattern lifts all of its payments together.
+
+The top-level `features.py` is still used by `predict.py` for the contract columns in
+`predictions.csv` and for the alert reasons.
+
+## Current score (5-fold CV, grouped by scenario and by relay cohort)
+Site metric (100 × average precision) **55.4**: easy 68.8, medium 7.5, hard 1.5.
+PR-AUC 0.55, ROC-AUC 0.94. Top 1%: precision 0.76, recall 0.24. At the F1-best threshold
+(0.15): precision 0.71, recall 0.59, F1 0.64. The previous logistic/HGB model scores 49.1
+under the same split.
+Strong on cycle (85%), chain and fan-out-in (79%). Still weak on the two "relay" cohorts
+(aggregate 4%, distributed 0% recall): each cohort hides 1 planted scenario among 99 that
+match it on every feature tried so far. That's the biggest open problem.
