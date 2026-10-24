@@ -14,12 +14,9 @@ from sklearn.model_selection import StratifiedGroupKFold
 from .features import neighbour_features
 
 SEEDS = (0, 1, 2)
-<<<<<<< HEAD
-=======
 # Share of the medium specialist's rank in the final mix (CV: 5% gave AP 57.1 vs 55.6
 # without it, with a flat plateau from 4% to 7.5%; 20% and above clearly hurt).
 SPECIALIST_WEIGHT = 0.05
->>>>>>> 562c84ea58325bf504343922fb5ef977c8606a69
 
 
 def _gbm(seed):
@@ -61,17 +58,12 @@ def _oof(X, y, folds, seeds):
     return oof
 
 
-<<<<<<< HEAD
-def cross_validate(X, y, groups, ep_labels, n_splits=5, seeds=SEEDS):
-    folds = list(StratifiedGroupKFold(n_splits, shuffle=True, random_state=0).split(X, y, groups))
-=======
 def _folds(X, y, groups, n_splits):
     return list(StratifiedGroupKFold(n_splits, shuffle=True, random_state=0).split(X, y, groups))
 
 
 def cross_validate(X, y, groups, ep_labels, n_splits=5, seeds=SEEDS):
     folds = _folds(X, y, groups, n_splits)
->>>>>>> 562c84ea58325bf504343922fb5ef977c8606a69
     stage1 = _oof(X, y, folds, seeds)
     X2 = _stage2_inputs(X, stage1, ep_labels)
     stage2 = _oof(X2, y, folds, seeds)
@@ -107,13 +99,6 @@ def blend(stage1, stage2):
     blend's ordering (all the site's metric looks at) while the values still read like
     probabilities, so the alert threshold and the case reports stay meaningful.
     """
-<<<<<<< HEAD
-    rank = (pd.Series(stage1).rank(pct=True).to_numpy() + pd.Series(stage2).rank(pct=True).to_numpy()) / 2
-    mapped = np.empty(len(rank))
-    mapped[np.argsort(rank, kind="stable")] = np.sort(stage2)
-    # payments with the same average rank share one value, so ties stay ties
-    return pd.Series(mapped).groupby(rank).transform("mean").to_numpy()
-=======
     return _onto((_pct(stage1) + _pct(stage2)) / 2, stage2)
 
 
@@ -156,7 +141,6 @@ def fit_specialist(X, y, difficulty, seeds=SEEDS):
 def with_specialist(blended, specialist, weight=SPECIALIST_WEIGHT):
     """Mix the specialist's rank into the blend, keeping the blend's score scale."""
     return _onto((1 - weight) * _pct(blended) + weight * _pct(specialist), blended)
->>>>>>> 562c84ea58325bf504343922fb5ef977c8606a69
 
 
 def report(y, scores, difficulty):

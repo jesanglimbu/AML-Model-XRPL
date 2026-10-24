@@ -63,16 +63,6 @@ The starter notebook (`starter_notebook.ipynb` in the training download) runs in
 | `xrpl-detector`, single model (commit `4a66fec`) | 59.2 | 94% | 30% |
 | `xrpl-detector`, two-stage ranker `aml_ranker/` (commit `b176cf4`) | 65.4 | 91% | 29% |
 | `xrpl-detector`, stage-1 model alone (`submission_stage1.csv`) | 65.6 | 92% | not recorded |
-<<<<<<< HEAD
-| **`xrpl-detector`, blend of stage 1 and stage 2 (`submission_blend.csv`, now the default)** | **65.9** | 91% | not recorded |
-
-- What the 65.4 run caught, from the site's breakdown: easy **40%** of 800, medium **10%** of 225, observable hard **0%** of 200, ambiguous **0%** of 25. That adds up to about 342 payments, a little under the ~363 implied by 29% recall, so check which cut-off the breakdown uses before comparing runs on it.
-- **Best run: 65.9** (the blend). Reproduce with `python xrpl-detector/train_model.py` (about 15-20 min) then `python xrpl-detector/run_pipeline.py`, and upload `outputs/submission.csv`.
-- The two-stage ranker ranks the whole list better (score up 6.2), while its top 1% is slightly less clean (91% vs 94%). The top 1% can hold at most ~32% of the ~1,250 suspicious payments, so 29% recall is close to the ceiling.
-- **Scoring variants:** `run_pipeline.py` on the test data also writes `outputs/submission_stage1.csv` (stage-1 model alone, 65.6), `submission_stage2.csv` (two-stage ranker alone, 65.4) and `submission_blend.csv` (average rank of the two, 65.9). The blend is now the default `probability`, so `submission.csv`, the alerts and the case reports all use it; its values are mapped onto stage 2's score distribution, so they still read like probabilities and rank exactly like the 65.9 upload. In CV stage 2 helped medium and hard but hurt easy (easy AP 72.3 → 68.8), which is why mixing in stage 1 helps.
-- Next gains: the medium cases and the relay families (aggregate_relay, distributed_relay), still about 0% recall in cross-validation.
-
-=======
 | `xrpl-detector`, blend of stage 1 and stage 2 (`submission_blend.csv`) | 65.9 | 91% | not recorded |
 | `xrpl-detector`, blend + 5% medium specialist (`submission_specialist.csv`) | 65.9 | not recorded | not recorded |
 | `xrpl-detector`, blend on Owen's Mac (Python 3.9.6, scikit-learn 1.6.1) | 66.5 | not recorded | not recorded |
@@ -102,7 +92,6 @@ Rule: keep an experiment only if its CV AP beats the current default (the blend)
 - Honest caveat: **none of these improved the medium cases.** The specialist ranks medium cases worse than the main model; its gain comes from reordering the easy cases. The medium cases are slow and look like the legitimate decoys, and with only 27 medium scenarios in training no feature or weighting found so far separates them.
 - `run_pipeline.py` writes D as `outputs/submission_specialist.csv`. **On the leaderboard it tied the blend at 65.9**, so its CV gain didn't carry over to the test week and the blend stayed the default (now replaced by the mule signal). To switch anyway, set `DEFAULT_SCORE = "specialist"` in `xrpl-detector/config.py` and rerun `run_pipeline.py` (no retraining needed).
 
->>>>>>> 562c84ea58325bf504343922fb5ef977c8606a69
 ## The two-stage ranker (`xrpl-detector/aml_ranker/`)
 
 Replaces the pipeline's scoring model. Nothing downstream changes: `predict.py` still writes the same `predictions.csv` columns, so trails, alert ranking, graphs and case summaries work as before.
@@ -115,11 +104,6 @@ Replaces the pipeline's scoring model. Nothing downstream changes: `predict.py` 
 
 | File | What it is |
 |---|---|
-<<<<<<< HEAD
-| `payments.py` | The organisers' loader: one row per payment, valued in USD. **Not written by us.** |
-| `case_summary.py` | Case summary writer: turns flagged payments into readable reports |
-=======
->>>>>>> 562c84ea58325bf504343922fb5ef977c8606a69
 | `xrpl-detector/` | The pipeline: scoring (`aml_ranker/`), trails, alert ranking, graphs, case reports. See its README |
 | `LICENSE`, `THIRD_PARTY.md` | MIT licence and the list of what we didn't write (for the ZIP) |
 | `.gitignore` | Keeps data, `dnd-env/` and `.env` (API keys) out of git |
@@ -128,26 +112,6 @@ Never commit the data files or API keys. The rules forbid them in the ZIP, and t
 
 **Heads-up:** the `decode-and-detect-*` data folders are currently tracked in git (they were added before the `.gitignore`). Leave them out of the ZIP, and agree as a team before removing them from the repo.
 
-<<<<<<< HEAD
-## Using `case_summary.py`
-
-```sh
-python case_summary.py --data ../decode-and-detect-test-data --predictions predictions.csv --top 5
-```
-
-- `--out reports.md` saves the reports to a file
-- `--tx <hash>` summarises one specific payment
-- `--reasons-csv out.csv` writes the predictions with a `reason` column (for example `relay; fan-out`)
-
-For each case it lists red flags (relay, pass-on, fan-out, fan-in, cycle, pass-through account, unusually large), describes both accounts' week, and shows where the money went next.
-
-### Where it connects to your parts
-
-- **Team 1:** `follow_money()` in `case_summary.py` is a simple placeholder. Replace it with your trail tracker. It receives `(df, start_account, start_time, start_amount)` and should return a list of steps with `hop`, `from`, `to`, `usd`, `minutes_later`.
-- **Team 2:** the case summary picks its cases from your `predictions.csv`. Share each new version so the reports use your latest scores.
-
-Note: with only 700 accounts making 40,000 payments, almost every account is busy, so the red flags fire often. They explain a case; the score from team 2 decides what's suspicious.
-=======
 **Repo plan (agreed):** keep working in this repo for now. At **15:00** we copy the code into a **new repo without the data folders or old history**, and that new repo is the public one we submit. Before switching, copy your local `decode-and-detect-*` folders somewhere safe, because they won't be in the new repo.
 
 ## Case reports (`xrpl-detector/case_writer.py`, Owen)
@@ -160,7 +124,6 @@ Note: with only 700 accounts making 40,000 payments, almost every account is bus
 - the **trail graph** (`outputs/graphs/<alert>.png`) and every payment with its hash
 
 The top of the file has a "a flag is not proof" note and a glossary. Open `outputs/summaries.md` in VS Code's Markdown preview to see the graphs inline.
->>>>>>> 562c84ea58325bf504343922fb5ef977c8606a69
 
 ## Alerts: one system
 
